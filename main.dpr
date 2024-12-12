@@ -8,5 +8,10 @@ uses
   System.SysUtils;
 
 begin
-writeln('hello word');
+  try
+    { TODO -oUser -cConsole Main : написать функционал игры}
+  except
+    on E: Exception do
+      Writeln(E.ClassName, ': ', E.Message);
+  end;
 end.
