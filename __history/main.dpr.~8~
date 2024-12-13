@@ -8,6 +8,7 @@ uses
   System.SysUtils;
 
 const
+    MIN_COUNT_PLAYERS = 2;
     MAX_COUNT_PLAYERS = 10;
     DEFAULT_PATH = '/dictionary.txt';
 
@@ -24,9 +25,20 @@ type
   TCountLetters = 1..10;
 
 procedure CreateBankLetters(var bank: string);
+var
+  i, j, k:integer;
+  tempchar:char;
 begin
-
-
+  randomize;
+  bank:='אאאאבבבבגגגגדדדדההההווווזזזזחחחחטטטטייייךךךךככככללללםםםםממממןןןןננננססססעעעעףףףףפפפפץץץץצצצצקקקקררררששששתתתתûûûûüüüü‎‎‎‎‏‏‏‏ÿÿÿÿ';
+  for i := 1 to 300 do
+  begin
+    j:=random(length(bank))+1;
+    k:=random(length(bank))+1;
+    tempchar:=bank[k];
+    bank[k]:=bank[j];
+    bank[j]:=tempchar;
+  end;
 end;
 
 procedure ReadWordDictionary(var dictionary: string);
@@ -35,13 +47,36 @@ begin
 end;
 
 procedure ReadPlayers(var players: TPlayers; var bank: string);
+var n: Integer;
+    correct: Boolean;
 begin
-
+  correct := True;
+  while Correct do
+    begin
+    ReadLn(n);
+    if (MIN_COUNT_PLAYERS <= n) and (n <= MAX_COUNT_PLAYERS) then
+    begin
+      Correct := False;
+    end
+    else
+    begin
+      writeln('Íוהמןףסעטלמו קטסכמ טדנמךמג, גגוהטעו הנףדמו קטסכמ: ');
+    end;
+  end;
+  for var i := 1 to n do
+  begin
+    players[i].Letters := copy(bank, 1, 10);
+    delete(bank, 1, 10);
+  end;
 end;
 
 function CutLetters(var bank: string; count: TCountLetters): string;
+var
+  tempstring:string;
 begin
-
+  tempstring:=copy(bank, 1, count);
+  delete(bank, 1, count);
+  result:=tempstring;
 end;
 
 procedure Game(var players: TPlayers;var bank, dictionary: string);
