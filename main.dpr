@@ -33,8 +33,8 @@ begin
   bank:='אאאאבבבבגגגגדדדדההההווווזזזזחחחחטטטטייייךךךךככככללללםםםםממממןןןןננננססססעעעעףףףףפפפפץץץץצצצצקקקקררררששששתתתתûûûûüüüü‎‎‎‎‏‏‏‏ÿÿÿÿ';
   for i := 1 to 300 do
   begin
-    j:=random(128)+1;
-    k:=random(128)+1;
+    j:=random(length(bank))+1;
+    k:=random(length(bank))+1;
     tempchar:=bank[k];
     bank[k]:=bank[j];
     bank[j]:=tempchar;
@@ -42,7 +42,19 @@ begin
 end;
 
 procedure ReadWordDictionary(var dictionary: string);
+var
+  wordFile: TextFile;
 begin
+  AssignFile(wordFile, 'words.txt');
+  try
+   Reset(wordFile);
+   Readln(wordFile, dictionary);
+   dictionary := UTF8toANSI(dictionary);
+   CloseFile(wordFile);
+  except
+   Writeln('Íו םאיהום פאיכ ס באםךמל סכמג');
+  end;
+
 
 end;
 
@@ -71,8 +83,12 @@ begin
 end;
 
 function CutLetters(var bank: string; count: TCountLetters): string;
+var
+  tempstring:string;
 begin
-
+  tempstring:=copy(bank, 1, count);
+  delete(bank, 1, count);
+  result:=tempstring;
 end;
 
 procedure Game(var players: TPlayers;var bank, dictionary: string);
@@ -91,8 +107,23 @@ begin
 end;
 
 function CheckWordInDictionary(word, dictionary: string): Boolean;
+(*var AddNewWord: Boolean;
+    Choise: Char;*)
 begin
-
+  //AddNewWord := False;
+  if pos(' ' + word + ' ', dictionary) <> 0 then
+  begin
+    Result := True;
+  end
+  (*else
+  begin
+    writeln('Äאםםמדמ סכמגא םוע ג סכמגאנו, ץמעטעו ודמ המבאגטעü? Ä/Í ');
+    ReadLn(Choise);
+    if Choise = 'Ä' then
+    begin
+      //AddToDictionary(dictionary);  םאהמ ןמלוםÿעü פףםךצטט לוסעאלט קעמבû נאבמעאכמ
+    end;
+  end; *)
 end;
 
 function IsAllAgreement(playersCount: Byte): Boolean;
@@ -120,13 +151,14 @@ begin
 
 end;
 
+var
+  str: string;
 begin
-  try
+    ReadWordDictionary(str);
+    Writeln(str);
+    Readln;
     { TODO -oUser -cConsole Main : םאןטסאעü פףםךצטמםאכ טדנû}
-  except
-    on E: Exception do
-      Writeln(E.ClassName, ': ', E.Message);
-  end;
+
 end.
 
 

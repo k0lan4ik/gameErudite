@@ -1,4 +1,4 @@
-program main;
+﻿program main;
 
 {$APPTYPE CONSOLE}
 
@@ -8,7 +8,6 @@ uses
   System.SysUtils;
 
 const
-
     MAX_COUNT_PLAYERS = 10;
     DEFAULT_PATH = '/dictionary.txt';
 
@@ -25,7 +24,20 @@ type
   TCountLetters = 1..10;
 
 procedure CreateBankLetters(var bank: string);
-
+var
+  i, j, k:integer;
+  tempchar:char;
+begin
+  randomize;
+  bank:='ааааббббввввггггддддеееежжжжззззииииййййккккллллммммннннооооппппррррссссттттууууффффххххццццччччшшшшщщщщъъъъыыыыььььээээююююяяяя';
+  for i := 1 to 300 do
+  begin
+    j:=random(length(bank))+1;
+    k:=random(length(bank))+1;
+    tempchar:=bank[k];
+    bank[k]:=bank[j];
+    bank[j]:=tempchar;
+  end;
 end;
 
 procedure ReadWordDictionary(var dictionary: string);
@@ -34,12 +46,17 @@ begin
 end;
 
 procedure ReadPlayers(var players: TPlayers; var bank: string);
+begin
 
 end;
 
 function CutLetters(var bank: string; count: TCountLetters): string;
+var
+  tempstring:string;
 begin
-
+  tempstring:=copy(bank, 1, count);
+  delete(bank, 1, count);
+  result:=tempstring;
 end;
 
 procedure Game(var players: TPlayers;var bank, dictionary: string);
@@ -87,10 +104,9 @@ begin
 
 end;
 
-
 begin
   try
-    { TODO -oUser -cConsole Main : íàïèñàòü ôóíêöèîíàë èãðû}
+    { TODO -oUser -cConsole Main : написать функционал игры}
   except
     on E: Exception do
       Writeln(E.ClassName, ': ', E.Message);
