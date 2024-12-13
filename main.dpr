@@ -1,4 +1,4 @@
-program main;
+п»їprogram main;
 
 {$APPTYPE CONSOLE}
 
@@ -18,7 +18,7 @@ type
       lastLetter: char;
       points: Integer;
       friendHelp: Boolean;
-      fi_fi: Boolean;
+      fi_fih: Boolean;
   end;
   TPlayers = array [1..MAX_COUNT_PLAYERS] of TPlayer;
   TWordDictionary = array of string;
@@ -30,7 +30,7 @@ var
   tempchar:char;
 begin
   randomize;
-  bank:='ааааааааббббввввггггддддеееееееежжжжззззииииииииййййккккллллммммннннооооооооппппррррссссттттууууууууффффххххццццччччшшшшщщщщъъъъыыыыыыыыььььээээээээююююююююяяяяяяяя';
+  bank:='Р°Р°Р°Р°Р°Р°Р°Р°Р±Р±Р±Р±РІРІРІРІРіРіРіРіРґРґРґРґРµРµРµРµРµРµРµРµР¶Р¶Р¶Р¶Р·Р·Р·Р·РёРёРёРёРёРёРёРёР№Р№Р№Р№РєРєРєРєР»Р»Р»Р»РјРјРјРјРЅРЅРЅРЅРѕРѕРѕРѕРѕРѕРѕРѕРїРїРїРїСЂСЂСЂСЂСЃСЃСЃСЃС‚С‚С‚С‚СѓСѓСѓСѓСѓСѓСѓСѓС„С„С„С„С…С…С…С…С†С†С†С†С‡С‡С‡С‡С€С€С€С€С‰С‰С‰С‰СЉСЉСЉСЉС‹С‹С‹С‹С‹С‹С‹С‹СЊСЊСЊСЊСЌСЌСЌСЌСЌСЌСЌСЌСЋСЋСЋСЋСЋСЋСЋСЋСЏСЏСЏСЏСЏСЏСЏСЏ';
   for i := 1 to length(bank)*2 do
   begin
     j:=random(length(bank))+1;
@@ -52,7 +52,7 @@ begin
    dictionary := UTF8toANSI(dictionary);
    CloseFile(wordFile);}
   except
-   Writeln('Не найден файл с банком слов');
+   Writeln('РќРµ РЅР°Р№РґРµРЅ С„Р°Р№Р» СЃ Р±Р°РЅРєРѕРј СЃР»РѕРІ');
   end;
 
 
@@ -72,7 +72,7 @@ begin
     end
     else
     begin
-      writeln('Недопустимое число игроков, введите другое число: ');
+      writeln('РќРµРґРѕРїСѓСЃС‚РёРјРѕРµ С‡РёСЃР»Рѕ РёРіСЂРѕРєРѕРІ, РІРІРµРґРёС‚Рµ РґСЂСѓРіРѕРµ С‡РёСЃР»Рѕ: ');
     end;
   end;
   for var i := 1 to n do
@@ -113,12 +113,12 @@ begin
   //AddNewWord := False;
   (*else
   begin
-    writeln('Данного слова нет в словаре, хотите его добавить? Д/Н ');
+    writeln('Р”Р°РЅРЅРѕРіРѕ СЃР»РѕРІР° РЅРµС‚ РІ СЃР»РѕРІР°СЂРµ, С…РѕС‚РёС‚Рµ РµРіРѕ РґРѕР±Р°РІРёС‚СЊ? Р”/Рќ ');
     ReadLn(Choise);
-    if Choise = 'Д' then
+    if Choise = 'Р”' then
     begin
       //AddToDictionary
-      (dictionary);  надо поменять функции местами чтобы работало
+      (dictionary);  РЅР°РґРѕ РїРѕРјРµРЅСЏС‚СЊ С„СѓРЅРєС†РёРё РјРµСЃС‚Р°РјРё С‡С‚РѕР±С‹ СЂР°Р±РѕС‚Р°Р»Рѕ
     end;
   end; *)
 end;
@@ -139,7 +139,21 @@ begin
 end;
 
 procedure FriendHelp(var players: TPlayers; currentPlayer: Byte);
+
+procedure setout(letters:string);
+var temp:integer;
 begin
+for temp := 1 to length(letters) do
+write(letters[temp], ' ');
+writeln;
+end;
+
+var temp:integer;
+begin
+writeln('Р’Р°С€ РЅР°Р±РѕСЂ: ');
+setout(players[currentPlayer].letters);
+temp:=1;
+while temp<=length(players) do
 
 end;
 
@@ -151,7 +165,7 @@ end;
 
 begin
     Readln;
-    { TODO -oUser -cConsole Main : написать функционал игры}
+    { TODO -oUser -cConsole Main : РЅР°РїРёСЃР°С‚СЊ С„СѓРЅРєС†РёРѕРЅР°Р» РёРіСЂС‹}
 
 end.
 
