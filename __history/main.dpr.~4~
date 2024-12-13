@@ -100,6 +100,7 @@ begin
 
 end;
 
+var bank:string;
 begin
   try
     { TODO -oUser -cConsole Main : написать функционал игры}
