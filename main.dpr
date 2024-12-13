@@ -83,7 +83,7 @@ begin
       writeln('Недопустимое число игроков, введите другое число: ');
     end;
   end;
-  for var i := 1 to n do
+  for var i := 0 to n do
   begin
     players[i].Letters := copy(bank, 1, 10);
     delete(bank, 1, 10);
@@ -109,9 +109,16 @@ begin
 
 end;
 
-function CheckWordInPlayer(word, letters: string): Boolean;
+function CheckLettersInPlayer(var players: TPlayers; var word: String; letters: string; currentPlayer: Byte): Boolean;
+var ThereIs: Boolean;
+    NumOfLetter: Integer;
 begin
+  ThereIs := True;
+  while ThereIs do
+  begin
+    if True then
 
+  end;
 end;
 
 function CheckWordInDictionary(word: String; dictionary: TWordDictionary): Boolean;
