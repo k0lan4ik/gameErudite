@@ -111,14 +111,25 @@ end;
 
 function CheckLettersInPlayer(var players: TPlayers; var word: String; letters: string; currentPlayer: Byte): Boolean;
 var ThereIs: Boolean;
-    NumOfLetter: Integer;
+    NumOfLetters: Integer;
+    NumOfChar: Integer;
 begin
+  NumOfLetters := 1;
   ThereIs := True;
-  while ThereIs do
+  while ThereIs and (NumOfLetters <= length(word)) do
   begin
-    if True then
-
+    NumOfChar := pos(word[NumOfLetters], players[currentPlayer].letters);
+    if NumOfChar <> 0 then
+    begin
+      NumOfLetters := NumOfLetters + 1;
+      delete(players[currentPlayer].letters, NumOfChar, 1);
+    end
+    else
+    begin
+      ThereIs := False;
+    end;
   end;
+  Result := ThereIs;
 end;
 
 function CheckWordInDictionary(word: String; dictionary: TWordDictionary): Boolean;
