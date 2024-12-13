@@ -19,7 +19,6 @@ type
       points: Integer;
       friendHelp: Boolean;
       fi_fi: Boolean;
-      prevSkip: Boolean;
   end;
   TPlayers = array [1..MAX_COUNT_PLAYERS] of TPlayer;
   TWordDictionary = array of string;
@@ -31,8 +30,8 @@ var
   tempchar:char;
 begin
   randomize;
-  bank:='אאאאבבבבגגגגדדדדההההווווזזזזחחחחטטטטייייךךךךככככללללםםםםממממןןןןננננססססעעעעףףףףפפפפץץץץצצצצקקקקררררששששתתתתûûûûüüüü‎‎‎‎‏‏‏‏ÿÿÿÿ';
-  for i := 1 to 300 do
+  bank:='אאאאאאאאבבבבגגגגדדדדההההווווווווזזזזחחחחטטטטטטטטייייךךךךככככללללםםםםממממממממןןןןננננססססעעעעףףףףףףףףפפפפץץץץצצצצקקקקררררששששתתתתûûûûûûûûüüüü‎‎‎‎‎‎‎‎‏‏‏‏‏‏‏‏ÿÿÿÿÿÿÿÿ';
+  for i := 1 to length(bank)*2 do
   begin
     j:=random(length(bank))+1;
     k:=random(length(bank))+1;
