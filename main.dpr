@@ -30,7 +30,7 @@ var
   tempchar:char;
 begin
   randomize;
-  bank:='ааааааааббббввввггггддддеееееееежжжжззззииииииииййййккккллллммммннннооооооооппппррррссссттттууууууууффффххххццццччччшшшшщщщщъъъъыыыыыыыыььььээээээээююююююююяяяяяяяя';
+  bank:='пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ';
   for i := 1 to length(bank)*2 do
   begin
     j:=random(length(bank))+1;
@@ -60,7 +60,7 @@ begin
    end;
    CloseFile(wordFile);
   except
-   Writeln('Не найден файл с банком слов');
+   Writeln('пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ');
   end;
 
 
@@ -80,7 +80,7 @@ begin
     end
     else
     begin
-      writeln('Недопустимое число игроков, введите другое число: ');
+      writeln('пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ: ');
     end;
   end;
   for var i := 1 to n do
@@ -114,22 +114,51 @@ begin
 
 end;
 
-function CheckWordInDictionary(word: string; dictionary: TWordDictionary): Boolean;
+function CheckWordInDictionary(word: String; dictionary: TWordDictionary): Boolean;
 (*var AddNewWord: Boolean;
     Choise: Char;*)
+var FindSome: Boolean;
+    lengthDictionary: Integer;
+    summ: Integer;
 begin
+  FindSome := True;
+  lengthDictionary := StrToInt(dictionary[0]) div 2;
+  summ := lengthDictionary;
+  while (FindSome) and (summ <> 0) do
+  begin
+    if word < dictionary[lengthDictionary] then
+    begin
+      summ := summ div 2;
+      lengthDictionary := lengthDictionary - summ;
+    end
+    else if word > dictionary[lengthDictionary] then
+    begin
+      summ := lengthDictionary div 2;
+      lengthDictionary := lengthDictionary + summ;
+    end
+    else
+    begin
+      Result := True;
+      FindSome := False;
+    end;
+  end;
+  if FindSome then
+    begin
+      Result := False;
+    end;
+end;
   //AddNewWord := False;
   (*else
   begin
-    writeln('Данного слова нет в словаре, хотите его добавить? Д/Н ');
+    writeln('пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ? пїЅ/пїЅ ');
     ReadLn(Choise);
-    if Choise = 'Д' then
+    if Choise = 'пїЅ' then
     begin
       //AddToDictionary
-      (dictionary);  надо поменять функции местами чтобы работало
+      (dictionary);  пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     end;
   end; *)
-end;
+
 
 function IsAllAgreement(playersCount: Byte): Boolean;
 begin
@@ -158,9 +187,15 @@ end;
 
 
 begin
-
+    (*var d : TWordDictionary;
+    SetLength(d, 4);
+    d[0] := '3';
+    d[1] := 'пїЅпїЅпїЅпїЅпїЅ';
+    d[2] := 'пїЅпїЅпїЅ';
+    d[3] := 'пїЅпїЅпїЅпїЅпїЅпїЅ';
+    writeln(CheckWordInDictionary('пїЅпїЅпїЅпїЅпїЅпїЅ', d));  *)
     Readln;
-    { TODO -oUser -cConsole Main : написать функционал игры}
+    { TODO -oUser -cConsole Main : пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ}
 
 end.
 
