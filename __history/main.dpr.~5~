@@ -32,8 +32,8 @@ begin
   bank:='אאאאבבבבגגגגדדדדההההווווזזזזחחחחטטטטייייךךךךככככללללםםםםממממןןןןננננססססעעעעףףףףפפפפץץץץצצצצקקקקררררששששתתתתûûûûüüüü‎‎‎‎‏‏‏‏ÿÿÿÿ';
   for i := 1 to 300 do
   begin
-    j:=random(length(bank))+1;
-    k:=random(length(bank))+1;
+    j:=random(128)+1;
+    k:=random(128)+1;
     tempchar:=bank[k];
     bank[k]:=bank[j];
     bank[j]:=tempchar;
@@ -51,12 +51,8 @@ begin
 end;
 
 function CutLetters(var bank: string; count: TCountLetters): string;
-var
-  tempstring:string;
 begin
-  tempstring:=copy(bank, 1, count);
-  delete(bank, 1, count);
-  result:=tempstring;
+
 end;
 
 procedure Game(var players: TPlayers;var bank, dictionary: string);

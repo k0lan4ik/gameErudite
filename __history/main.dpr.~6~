@@ -1,4 +1,4 @@
-program main;
+п»їprogram main;
 
 {$APPTYPE CONSOLE}
 
@@ -29,11 +29,11 @@ var
   tempchar:char;
 begin
   randomize;
-  bank:='ааааббббввввггггддддеееежжжжззззииииййййккккллллммммннннооооппппррррссссттттууууффффххххццццччччшшшшщщщщъъъъыыыыььььээээююююяяяя';
+  bank:='Р°Р°Р°Р°Р±Р±Р±Р±РІРІРІРІРіРіРіРіРґРґРґРґРµРµРµРµР¶Р¶Р¶Р¶Р·Р·Р·Р·РёРёРёРёР№Р№Р№Р№РєРєРєРєР»Р»Р»Р»РјРјРјРјРЅРЅРЅРЅРѕРѕРѕРѕРїРїРїРїСЂСЂСЂСЂСЃСЃСЃСЃС‚С‚С‚С‚СѓСѓСѓСѓС„С„С„С„С…С…С…С…С†С†С†С†С‡С‡С‡С‡С€С€С€С€С‰С‰С‰С‰СЉСЉСЉСЉС‹С‹С‹С‹СЊСЊСЊСЊСЌСЌСЌСЌСЋСЋСЋСЋСЏСЏСЏСЏ';
   for i := 1 to 300 do
   begin
-    j:=random(length(bank))+1;
-    k:=random(length(bank))+1;
+    j:=random(128)+1;
+    k:=random(128)+1;
     tempchar:=bank[k];
     bank[k]:=bank[j];
     bank[j]:=tempchar;
@@ -105,12 +105,13 @@ begin
 end;
 
 begin
-  try
-    { TODO -oUser -cConsole Main : написать функционал игры}
+  (*try
+    { TODO -oUser -cConsole Main : РЅР°РїРёСЃР°С‚СЊ С„СѓРЅРєС†РёРѕРЅР°Р» РёРіСЂС‹}
   except
     on E: Exception do
       Writeln(E.ClassName, ': ', E.Message);
-  end;
+  end;*)
+
 end.
 
 
