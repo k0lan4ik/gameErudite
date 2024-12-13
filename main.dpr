@@ -20,7 +20,7 @@ type
       friendHelp: Boolean;
       fi_fi: Boolean;
   end;
-  TPlayers = array [1..MAX_COUNT_PLAYERS] of TPlayer;
+  TPlayers = array of TPlayer;
   TWordDictionary = array of string;
   TCountLetters = 1..10;
 
