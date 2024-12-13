@@ -19,7 +19,6 @@ type
       points: Integer;
       friendHelp: Boolean;
       fi_fi: Boolean;
-      prevSkip: Boolean;
   end;
   TPlayers = array [1..MAX_COUNT_PLAYERS] of TPlayer;
   TWordDictionary = array of string;
@@ -45,13 +44,14 @@ end;
 procedure ReadWordDictionary(var dictionary: TWordDictionary);
 var
   wordFile: TextFile;
+  isWord: Boolean;
 begin
   AssignFile(wordFile, DEFAULT_PATH);
   try
-   {Reset(wordFile);
-   Readln(wordFile, dictionary);
-   dictionary := UTF8toANSI(dictionary);
-   CloseFile(wordFile);}
+   Reset(wordFile);
+   Readln(wordFile, );
+   dictionary := UTF8toANSI();
+   CloseFile(wordFile);
   except
    Writeln('Не найден файл с банком слов');
   end;
