@@ -44,13 +44,14 @@ end;
 procedure ReadWordDictionary(var dictionary: TWordDictionary);
 var
   wordFile: TextFile;
+  word: string;
   isWord: Boolean;
 begin
   AssignFile(wordFile, DEFAULT_PATH);
   try
    Reset(wordFile);
-   Readln(wordFile, );
-   dictionary := UTF8toANSI();
+   Readln(wordFile, word);
+   SetLength(dictionary, StrToInt(word));
    CloseFile(wordFile);
   except
    Writeln('Не найден файл с банком слов');
@@ -107,7 +108,7 @@ begin
 
 end;
 
-function CheckWordInDictionary(word, dictionary: TWordDictionary): Boolean;
+function CheckWordInDictionary(word: string; dictionary: TWordDictionary): Boolean;
 (*var AddNewWord: Boolean;
     Choise: Char;*)
 begin
