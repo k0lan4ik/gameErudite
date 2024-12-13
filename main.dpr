@@ -185,18 +185,17 @@ begin
 
 end;
 
+var
+  bank: string;
+  dictionary: TWordDictionary;
+  players: TPlayers;
 
 begin
-    (*var d : TWordDictionary;
-    SetLength(d, 4);
-    d[0] := '3';
-    d[1] := '�����';
-    d[2] := '���';
-    d[3] := '������';
-    writeln(CheckWordInDictionary('������', d));  *)
-    Readln;
-    { TODO -oUser -cConsole Main : �������� ���������� ����}
+    CreateBankLetters(bank);
+    ReadWordDictionary(dictionary);
+    ReadPlayers(players,bank);
 
+    Readln;
 end.
 
 
