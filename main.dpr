@@ -44,13 +44,21 @@ end;
 procedure ReadWordDictionary(var dictionary: TWordDictionary);
 var
   wordFile: TextFile;
+  word: string;
+  isWord: Boolean;
+  i: Integer;
 begin
   AssignFile(wordFile, DEFAULT_PATH);
   try
-   {Reset(wordFile);
-   Readln(wordFile, dictionary);
-   dictionary := UTF8toANSI(dictionary);
-   CloseFile(wordFile);}
+   Reset(wordFile);
+   Readln(wordFile, word);
+   SetLength(dictionary, StrToInt(word) + 1);
+   for i := Low(dictionary) to High(dictionary)  do
+   begin
+     dictionary[i] := UTF8ToANSI(word);
+      Readln(wordFile, word);
+   end;
+   CloseFile(wordFile);
   except
    Writeln('Не найден файл с банком слов');
   end;
@@ -106,7 +114,7 @@ begin
 
 end;
 
-function CheckWordInDictionary(word, dictionary: TWordDictionary): Boolean;
+function CheckWordInDictionary(word: string; dictionary: TWordDictionary): Boolean;
 (*var AddNewWord: Boolean;
     Choise: Char;*)
 begin
@@ -150,6 +158,7 @@ end;
 
 
 begin
+
     Readln;
     { TODO -oUser -cConsole Main : написать функционал игры}
 
