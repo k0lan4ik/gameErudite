@@ -193,9 +193,63 @@ begin
 end;
 
 procedure FiftyFifty(var player: TPlayer;var bank:string);
+var change5: string;
+    temp_letters: string[10];
+    correct_input: boolean;
+    i, f, count_letters: integer;
 begin
+  correct_input := False;
+  while not correct_input do
+  begin
+    i := 1;
+    f := 1;
+    count_letters := 0;
+    temp_letters := player.letters;
+    writeln('Ваш набор букв: ', player.letters);
+    write('Введите буквы для обмена: ');
+    readln(change5);
+    correct_input := True;
+    {if length(change5) <> 5 then
+    begin
+      correct_input := False;
+      writeln('Вы ввели неверное количество букв.');
+    end;}
+    for var l := 1 to length(change5) do
+    begin
+      if change5[l] <> ' ' then
+      count_letters := count_letters + 1;
+    end;
+    if count_letters <> 5 then
+    begin
+      correct_input := False;
+      writeln('Вы ввели неверное количество букв.');
+    end;
+    while (i < 6) and (correct_input) do
+    begin
+      if change5[f] <> ' ' then
+      begin
+        if pos(change5[f], temp_letters) = 0 then
+        begin
+          correct_input := False;
+          writeln('Неверный ввод. Не все введенные вами буквы имеются в вашем наборе.');
+        end
+        else
+        begin
+          delete(temp_letters, pos(change5[f], temp_letters, 1), 1);
+        end;
+        i := i + 1;
+      end;
+      f := f + 1;
+    end;
+  end;
 
+  for var k := 1 to 5 do
+  begin
+    player.letters := temp_letters;
+  end;
+  player.letters := player.letters + CutLetters(bank, 5);
 end;
+
 
 procedure FriendHelp(var players: TPlayers; currentPlayer: Byte);
 begin
@@ -216,7 +270,7 @@ begin
     CreateBankLetters(bank);
     ReadWordDictionary(dictionary);
     ReadPlayers(players,bank);
-
+    FiftyFifty(players[0], bank);
     Readln;
 end.
 
