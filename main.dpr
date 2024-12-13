@@ -19,7 +19,7 @@ type
       points: Integer;
       friendHelp: Boolean;
       fi_fi: Boolean;
-      prevSkip: Boolean;
+
   end;
   TPlayers = array [1..MAX_COUNT_PLAYERS] of TPlayer;
   TWordDictionary = array of string;
@@ -107,10 +107,39 @@ begin
 
 end;
 
-function CheckWordInDictionary(word, dictionary: TWordDictionary): Boolean;
+function CheckWordInDictionary(var word: String; dictionary: TWordDictionary): Boolean;
 (*var AddNewWord: Boolean;
     Choise: Char;*)
+var FindSome: Boolean;
+    lengthDictionary: Integer;
+    summ: Integer;
 begin
+  FindSome := True;
+  lengthDictionary := StrToInt(dictionary[0]) div 2;
+  summ := lengthDictionary;
+  while (FindSome) and (lengthDictionary <> 0) do
+  begin
+    if word < dictionary[lengthDictionary] then
+    begin
+      summ := summ div 2;
+      lengthDictionary := lengthDictionary - summ;
+    end
+    else if word > dictionary[lengthDictionary] then
+    begin
+      summ := lengthDictionary div 2;
+      lengthDictionary := lengthDictionary + summ;
+    end
+    else
+    begin
+      Result := True;
+      FindSome := False;
+    end;
+  end;
+  if FindSome then
+    begin
+      Result := False;
+    end;
+end;
   //AddNewWord := False;
   (*else
   begin
@@ -122,7 +151,7 @@ begin
       (dictionary);  надо поменять функции местами чтобы работало
     end;
   end; *)
-end;
+
 
 function IsAllAgreement(playersCount: Byte): Boolean;
 begin
