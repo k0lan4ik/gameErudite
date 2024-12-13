@@ -30,7 +30,7 @@ var
   tempchar:char;
 begin
   randomize;
-  bank:='אאאאאאאאבבבבגגגגדדדדההההווווווווזזזזחחחחטטטטטטטטייייךךךךככככללללםםםםממממממממןןןןננננססססעעעעףףףףףףףףפפפפץץץץצצצצקקקקררררששששתתתתûûûûûûûûüüüü‎‎‎‎‎‎‎‎‏‏‏‏‏‏‏‏ÿÿÿÿÿÿÿÿ';
+  bank:='אאאאבבבבגגגגדדדדההההווווזזזזחחחחטטטטייייךךךךככככללללםםםםממממןןןןננננססססעעעעףףףףפפפפץץץץצצצצקקקקררררששששתתתתûûûûüüüü‎‎‎‎‏‏‏‏ÿÿÿÿ';
   for i := 1 to 300 do
   begin
     j:=random(length(bank))+1;
@@ -123,18 +123,14 @@ function IsAllSkip(players: TPlayers): Boolean;
 begin
 
 end;
-var
-bank:string;
+
 begin
-  (*try
+  try
     { TODO -oUser -cConsole Main : םאןטסאעü פףםךצטמםאכ טדנû}
   except
     on E: Exception do
       Writeln(E.ClassName, ': ', E.Message);
-  end;*)
-  createbankletters(bank);
-  writeln(bank);
-  readln;
+  end;
 end.
 
 
