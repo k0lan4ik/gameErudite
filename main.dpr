@@ -20,7 +20,7 @@ type
       friendHelp: Boolean;
       fi_fi: Boolean;
   end;
-  TPlayers = array [1..MAX_COUNT_PLAYERS] of TPlayer;
+  TPlayers = array of TPlayer;
   TWordDictionary = array of string;
   TCountLetters = 1..10;
 
@@ -30,8 +30,8 @@ var
   tempchar:char;
 begin
   randomize;
-  bank:='ааааббббввввггггддддеееежжжжззззииииййййккккллллммммннннооооппппррррссссттттууууффффххххццццччччшшшшщщщщъъъъыыыыььььээээююююяяяя';
-  for i := 1 to 300 do
+  bank:='Р°Р°Р°Р°Р°Р°Р°Р°Р±Р±Р±Р±РІРІРІРІРіРіРіРіРґРґРґРґРµРµРµРµРµРµРµРµР¶Р¶Р¶Р¶Р·Р·Р·Р·РёРёРёРёРёРёРёРёР№Р№Р№Р№РєРєРєРєР»Р»Р»Р»РјРјРјРјРЅРЅРЅРЅРѕРѕРѕРѕРѕРѕРѕРѕРїРїРїРїСЂСЂСЂСЂСЃСЃСЃСЃС‚С‚С‚С‚СѓСѓСѓСѓСѓСѓСѓСѓС„С„С„С„С…С…С…С…С†С†С†С†С‡С‡С‡С‡С€С€С€С€С‰С‰С‰С‰СЉСЉСЉСЉС‹С‹С‹С‹С‹С‹С‹С‹СЊСЊСЊСЊСЌСЌСЌСЌСЌСЌСЌСЌСЋСЋСЋСЋСЋСЋСЋСЋСЏСЏСЏСЏСЏСЏСЏСЏ';
+  for i := 1 to length(bank)*2 do
   begin
     j:=random(length(bank))+1;
     k:=random(length(bank))+1;
@@ -44,15 +44,23 @@ end;
 procedure ReadWordDictionary(var dictionary: TWordDictionary);
 var
   wordFile: TextFile;
+  word: string;
+  isWord: Boolean;
+  i: Integer;
 begin
   AssignFile(wordFile, DEFAULT_PATH);
   try
-   {Reset(wordFile);
-   Readln(wordFile, dictionary);
-   dictionary := UTF8toANSI(dictionary);
-   CloseFile(wordFile);}
+   Reset(wordFile);
+   Readln(wordFile, word);
+   SetLength(dictionary, StrToInt(word) + 1);
+   for i := Low(dictionary) to High(dictionary)  do
+   begin
+     dictionary[i] := UTF8ToANSI(word);
+      Readln(wordFile, word);
+   end;
+   CloseFile(wordFile);
   except
-   Writeln('Не найден файл с банком слов');
+   Writeln('С„Р°Р№Р» СЃР»РѕРІР°СЂСЏ РЅРµ РЅР°Р№РґРµРЅ');
   end;
 
 
@@ -72,7 +80,7 @@ begin
     end
     else
     begin
-      writeln('Недопустимое число игроков, введите другое число: ');
+      writeln('РќРµРґРѕРїСѓСЃС‚РёРјРѕРµ С‡РёСЃР»Рѕ РёРіСЂРѕРєРѕРІ, РІРІРµРґРёС‚Рµ РґСЂСѓРіРѕРµ С‡РёСЃР»Рѕ: ');
     end;
   end;
   for var i := 1 to n do
@@ -106,22 +114,51 @@ begin
 
 end;
 
-function CheckWordInDictionary(word, dictionary: TWordDictionary): Boolean;
+function CheckWordInDictionary(word: String; dictionary: TWordDictionary): Boolean;
 (*var AddNewWord: Boolean;
     Choise: Char;*)
+var FindSome: Boolean;
+    lengthDictionary: Integer;
+    summ: Integer;
 begin
+  FindSome := True;
+  lengthDictionary := StrToInt(dictionary[0]) div 2;
+  summ := lengthDictionary;
+  while (FindSome) and (summ <> 0) do
+  begin
+    if word < dictionary[lengthDictionary] then
+    begin
+      summ := summ div 2;
+      lengthDictionary := lengthDictionary - summ;
+    end
+    else if word > dictionary[lengthDictionary] then
+    begin
+      summ := lengthDictionary div 2;
+      lengthDictionary := lengthDictionary + summ;
+    end
+    else
+    begin
+      Result := True;
+      FindSome := False;
+    end;
+  end;
+  if FindSome then
+    begin
+      Result := False;
+    end;
+end;
   //AddNewWord := False;
   (*else
   begin
-    writeln('Данного слова нет в словаре, хотите его добавить? Д/Н ');
+    writeln('пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ? пїЅ/пїЅ ');
     ReadLn(Choise);
-    if Choise = 'Д' then
+    if Choise = 'пїЅ' then
     begin
       //AddToDictionary
-      (dictionary);  надо поменять функции местами чтобы работало
+      (dictionary);  пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     end;
   end; *)
-end;
+
 
 function IsAllAgreement(playersCount: Byte): Boolean;
 begin
@@ -142,7 +179,7 @@ begin
   correct_input := False;
   while not correct_input do
   begin
-    write('Введите буквы для обмена');
+    write('пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ');
     readln(change5);
     correct_input := True;
     while (i < 6) and (correct_input) do
@@ -150,7 +187,7 @@ begin
       if pos(change5[i], player.letters) = 0 then
       begin
       correct_input := False;
-      writeln('Неверный ввод. Не все введенные буквы имеются в вашем наборе букв.');
+      writeln('пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ. пїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ.');
       end;
       i := i + 1;
     end;
@@ -174,12 +211,17 @@ begin
 
 end;
 
+var
+  bank: string;
+  dictionary: TWordDictionary;
+  players: TPlayers;
 
 begin
+    CreateBankLetters(bank);
+    ReadWordDictionary(dictionary);
+    ReadPlayers(players,bank);
 
     Readln;
-    { TODO -oUser -cConsole Main : написать функционал игры}
-
 end.
 
 
