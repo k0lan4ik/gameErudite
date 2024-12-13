@@ -46,12 +46,18 @@ var
   wordFile: TextFile;
   word: string;
   isWord: Boolean;
+  i: Integer;
 begin
   AssignFile(wordFile, DEFAULT_PATH);
   try
    Reset(wordFile);
    Readln(wordFile, word);
-   SetLength(dictionary, StrToInt(word));
+   SetLength(dictionary, StrToInt(word) + 1);
+   for i := Low(dictionary) to High(dictionary)  do
+   begin
+     dictionary[i] := UTF8ToANSI(word);
+      Readln(wordFile, word);
+   end;
    CloseFile(wordFile);
   except
    Writeln('Не найден файл с банком слов');
@@ -152,6 +158,7 @@ end;
 
 
 begin
+
     Readln;
     { TODO -oUser -cConsole Main : написать функционал игры}
 
