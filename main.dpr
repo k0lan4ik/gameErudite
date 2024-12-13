@@ -10,7 +10,7 @@ uses
 const
     MIN_COUNT_PLAYERS = 2;
     MAX_COUNT_PLAYERS = 10;
-    DEFAULT_PATH = '/dictionary.txt';
+    DEFAULT_PATH = 'words.txt';
 
 type
   TPlayer = record
@@ -22,6 +22,7 @@ type
       prevSkip: Boolean;
   end;
   TPlayers = array [1..MAX_COUNT_PLAYERS] of TPlayer;
+  TWordDictionary = array of string;
   TCountLetters = 1..10;
 
 procedure CreateBankLetters(var bank: string);
@@ -30,7 +31,7 @@ var
   tempchar:char;
 begin
   randomize;
-  bank:='אאאאאאאאבבבבגגגגדדדדההההווווווווזזזזחחחחטטטטטטטטייייךךךךככככללללםםםםממממממממןןןןננננססססעעעעףףףףףףףףפפפפץץץץצצצצקקקקררררששששתתתתûûûûûûûûüüüü‎‎‎‎‎‎‎‎‏‏‏‏‏‏‏‏ÿÿÿÿÿÿÿÿ';
+  bank:='אאאאבבבבגגגגדדדדההההווווזזזזחחחחטטטטייייךךךךככככללללםםםםממממןןןןננננססססעעעעףףףףפפפפץץץץצצצצקקקקררררששששתתתתûûûûüüüü‎‎‎‎‏‏‏‏ÿÿÿÿ';
   for i := 1 to 300 do
   begin
     j:=random(length(bank))+1;
@@ -41,8 +42,20 @@ begin
   end;
 end;
 
-procedure ReadWordDictionary(var dictionary: string);
+procedure ReadWordDictionary(var dictionary: TWordDictionary);
+var
+  wordFile: TextFile;
 begin
+  AssignFile(wordFile, DEFAULT_PATH);
+  try
+   {Reset(wordFile);
+   Readln(wordFile, dictionary);
+   dictionary := UTF8toANSI(dictionary);
+   CloseFile(wordFile);}
+  except
+   Writeln('Íו םאיהום פאיכ ס באםךמל סכמג');
+  end;
+
 
 end;
 
@@ -94,9 +107,21 @@ begin
 
 end;
 
-function CheckWordInDictionary(word, dictionary: string): Boolean;
+function CheckWordInDictionary(word, dictionary: TWordDictionary): Boolean;
+(*var AddNewWord: Boolean;
+    Choise: Char;*)
 begin
-
+  //AddNewWord := False;
+  (*else
+  begin
+    writeln('Äאםםמדמ סכמגא םוע ג סכמגאנו, ץמעטעו ודמ המבאגטעü? Ä/Í ');
+    ReadLn(Choise);
+    if Choise = 'Ä' then
+    begin
+      //AddToDictionary
+      (dictionary);  םאהמ ןמלוםÿעü פףםךצטט לוסעאלט קעמבû נאבמעאכמ
+    end;
+  end; *)
 end;
 
 function IsAllAgreement(playersCount: Byte): Boolean;
@@ -104,7 +129,7 @@ begin
 
 end;
 
-procedure AddToDictionary(var dictionary: string);
+procedure AddToDictionary(var dictionary: TWordDictionary);
 begin
 
 end;
@@ -123,18 +148,12 @@ function IsAllSkip(players: TPlayers): Boolean;
 begin
 
 end;
-var
-bank:string;
+
+
 begin
-  (*try
+    Readln;
     { TODO -oUser -cConsole Main : םאןטסאעü פףםךצטמםאכ טדנû}
-  except
-    on E: Exception do
-      Writeln(E.ClassName, ': ', E.Message);
-  end;*)
-  createbankletters(bank);
-  writeln(bank);
-  readln;
+
 end.
 
 
