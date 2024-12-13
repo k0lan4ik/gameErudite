@@ -42,7 +42,19 @@ begin
 end;
 
 procedure ReadWordDictionary(var dictionary: string);
+var
+  wordFile: TextFile;
 begin
+  AssignFile(wordFile, 'words.txt');
+  try
+   Reset(wordFile);
+   Readln(wordFile, dictionary);
+   dictionary := UTF8toANSI(dictionary);
+   CloseFile(wordFile);
+  except
+   Writeln('Не найден файл с банком слов');
+  end;
+
 
 end;
 
@@ -95,8 +107,23 @@ begin
 end;
 
 function CheckWordInDictionary(word, dictionary: string): Boolean;
+(*var AddNewWord: Boolean;
+    Choise: Char;*)
 begin
-
+  //AddNewWord := False;
+  if pos(' ' + word + ' ', dictionary) <> 0 then
+  begin
+    Result := True;
+  end
+  (*else
+  begin
+    writeln('Данного слова нет в словаре, хотите его добавить? Д/Н ');
+    ReadLn(Choise);
+    if Choise = 'Д' then
+    begin
+      //AddToDictionary(dictionary);  надо поменять функции местами чтобы работало
+    end;
+  end; *)
 end;
 
 function IsAllAgreement(playersCount: Byte): Boolean;
@@ -124,13 +151,14 @@ begin
 
 end;
 
+var
+  str: string;
 begin
-  try
+    ReadWordDictionary(str);
+    Writeln(str);
+    Readln;
     { TODO -oUser -cConsole Main : написать функционал игры}
-  except
-    on E: Exception do
-      Writeln(E.ClassName, ': ', E.Message);
-  end;
+
 end.
 
 

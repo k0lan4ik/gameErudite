@@ -8,6 +8,7 @@ uses
   System.SysUtils;
 
 const
+
     MAX_COUNT_PLAYERS = 10;
     DEFAULT_PATH = '/dictionary.txt';
 
@@ -24,20 +25,7 @@ type
   TCountLetters = 1..10;
 
 procedure CreateBankLetters(var bank: string);
-var
-  i, j, k:integer;
-  tempchar:char;
-begin
-  randomize;
-  bank:='ààààááááââââããããääääååååææææççççèèèèééééêêêêëëëëììììííííîîîîïïïïğğğğññññòòòòóóóóôôôôõõõõöööö÷÷÷÷øøøøùùùùúúúúûûûûüüüüıııışşşşÿÿÿÿ';
-  for i := 1 to 300 do
-  begin
-    j:=random(128)+1;
-    k:=random(128)+1;
-    tempchar:=bank[k];
-    bank[k]:=bank[j];
-    bank[j]:=tempchar;
-  end;
+
 end;
 
 procedure ReadWordDictionary(var dictionary: string);
@@ -46,7 +34,6 @@ begin
 end;
 
 procedure ReadPlayers(var players: TPlayers; var bank: string);
-begin
 
 end;
 
@@ -100,10 +87,10 @@ begin
 
 end;
 
-var bank:string;
+
 begin
   try
-    { TODO -oUser -cConsole Main : íàïèñàòü ôóíêöèîíàë èãğû}
+    { TODO -oUser -cConsole Main : Ã­Ã Ã¯Ã¨Ã±Ã Ã²Ã¼ Ã´Ã³Ã­ÃªÃ¶Ã¨Ã®Ã­Ã Ã« Ã¨Ã£Ã°Ã»}
   except
     on E: Exception do
       Writeln(E.ClassName, ': ', E.Message);
