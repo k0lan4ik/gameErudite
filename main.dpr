@@ -18,9 +18,9 @@ type
       lastLetter: char;
       points: Integer;
       friendHelp: Boolean;
-      fi_fih: Boolean;
+      fi_fi: Boolean;
   end;
-  TPlayers = array [1..MAX_COUNT_PLAYERS] of TPlayer;
+  TPlayers = array of TPlayer;
   TWordDictionary = array of string;
   TCountLetters = 1..10;
 
@@ -44,18 +44,34 @@ end;
 procedure ReadWordDictionary(var dictionary: TWordDictionary);
 var
   wordFile: TextFile;
+  word: string;
+  isWord: Boolean;
+  i: Integer;
 begin
   AssignFile(wordFile, DEFAULT_PATH);
   try
-   {Reset(wordFile);
-   Readln(wordFile, dictionary);
-   dictionary := UTF8toANSI(dictionary);
-   CloseFile(wordFile);}
+   Reset(wordFile);
+   Readln(wordFile, word);
+   SetLength(dictionary, StrToInt(word) + 1);
+   for i := Low(dictionary) to High(dictionary)  do
+   begin
+     dictionary[i] := UTF8ToANSI(word);
+      Readln(wordFile, word);
+   end;
+   CloseFile(wordFile);
   except
-   Writeln('Не найден файл с банком слов');
+   Writeln('файл словаря не найден');
   end;
 
 
+end;
+function CutLetters(var bank: string; count: TCountLetters): string;
+var
+  tempstring:string;
+begin
+  tempstring:=copy(bank, 1, count);
+  delete(bank, 1, count);
+  result:=tempstring;
 end;
 
 procedure ReadPlayers(var players: TPlayers; var bank: string);
@@ -75,21 +91,17 @@ begin
       writeln('Недопустимое число игроков, введите другое число: ');
     end;
   end;
-  for var i := 1 to n do
+  SetLength(players, n);
+  for var i := 0 to n - 1 do
   begin
-    players[i].Letters := copy(bank, 1, 10);
-    delete(bank, 1, 10);
+    players[i].Letters := CutLetters(bank, 10);
+    players[i].points := 0;
+    players[i].fi_fi := true;
+    players[i].friendHelp := true;
   end;
 end;
 
-function CutLetters(var bank: string; count: TCountLetters): string;
-var
-  tempstring:string;
-begin
-  tempstring:=copy(bank, 1, count);
-  delete(bank, 1, count);
-  result:=tempstring;
-end;
+
 
 procedure Game(var players: TPlayers;var bank, dictionary: string);
 begin
@@ -106,22 +118,51 @@ begin
 
 end;
 
-function CheckWordInDictionary(word, dictionary: TWordDictionary): Boolean;
+function CheckWordInDictionary(word: string; dictionary: TWordDictionary): Boolean;
 (*var AddNewWord: Boolean;
     Choise: Char;*)
+var FindSome: Boolean;
+    lengthDictionary: Integer;
+    summ: Integer;
 begin
+  FindSome := True;
+  lengthDictionary := StrToInt(dictionary[0]) div 2;
+  summ := lengthDictionary;
+  while (FindSome) and (summ <> 0) do
+  begin
+    if word < dictionary[lengthDictionary] then
+    begin
+      summ := summ div 2;
+      lengthDictionary := lengthDictionary - summ;
+    end
+    else if word > dictionary[lengthDictionary] then
+    begin
+      summ := lengthDictionary div 2;
+      lengthDictionary := lengthDictionary + summ;
+    end
+    else
+    begin
+      Result := True;
+      FindSome := False;
+    end;
+  end;
+  if FindSome then
+    begin
+      Result := False;
+    end;
+end;
   //AddNewWord := False;
   (*else
   begin
-    writeln('Данного слова нет в словаре, хотите его добавить? Д/Н ');
+    writeln('������� ����� ��� � �������, ������ ��� ��������? �/� ');
     ReadLn(Choise);
-    if Choise = 'Д' then
+    if Choise = '�' then
     begin
       //AddToDictionary
-      (dictionary);  надо поменять функции местами чтобы работало
+      (dictionary);  ���� �������� ������� ������� ����� ��������
     end;
   end; *)
-end;
+
 
 function IsAllAgreement(playersCount: Byte): Boolean;
 begin
@@ -139,21 +180,7 @@ begin
 end;
 
 procedure FriendHelp(var players: TPlayers; currentPlayer: Byte);
-
-procedure setout(letters:string);
-var temp:integer;
 begin
-for temp := 1 to length(letters) do
-write(letters[temp], ' ');
-writeln;
-end;
-
-var temp:integer;
-begin
-writeln('Ваш набор: ');
-setout(players[currentPlayer].letters);
-temp:=1;
-while temp<=length(players) do
 
 end;
 
@@ -162,11 +189,17 @@ begin
 
 end;
 
+var
+  bank: string;
+  dictionary: TWordDictionary;
+  players: TPlayers;
 
 begin
-    Readln;
-    { TODO -oUser -cConsole Main : написать функционал игры}
+    CreateBankLetters(bank);
+    ReadWordDictionary(dictionary);
+    ReadPlayers(players,bank);
 
+    Readln;
 end.
 
 
