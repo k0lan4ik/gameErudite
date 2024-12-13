@@ -109,7 +109,7 @@ begin
 
 end;
 
-function CheckLettersInPlayer(var players: TPlayers; var word: String; letters: string; currentPlayer: Byte): Boolean;
+function CheckLettersInPlayer(var word: String; letters: string): Boolean;
 var ThereIs: Boolean;
     NumOfLetters: Integer;
     NumOfChar: Integer;
@@ -118,11 +118,11 @@ begin
   ThereIs := True;
   while ThereIs and (NumOfLetters <= length(word)) do
   begin
-    NumOfChar := pos(word[NumOfLetters], players[currentPlayer].letters);
+    NumOfChar := pos(word[NumOfLetters], letters);
     if NumOfChar <> 0 then
     begin
       NumOfLetters := NumOfLetters + 1;
-      delete(players[currentPlayer].letters, NumOfChar, 1);
+      delete(letters, NumOfChar, 1);
     end
     else
     begin
