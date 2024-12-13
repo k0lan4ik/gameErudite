@@ -10,7 +10,7 @@ uses
 const
     MIN_COUNT_PLAYERS = 2;
     MAX_COUNT_PLAYERS = 10;
-    DEFAULT_PATH = '/dictionary.txt';
+    DEFAULT_PATH = 'words.txt';
 
 type
   TPlayer = record
@@ -22,6 +22,7 @@ type
       prevSkip: Boolean;
   end;
   TPlayers = array [1..MAX_COUNT_PLAYERS] of TPlayer;
+  TWordDictionary = array of string;
   TCountLetters = 1..10;
 
 procedure CreateBankLetters(var bank: string);
@@ -41,16 +42,16 @@ begin
   end;
 end;
 
-procedure ReadWordDictionary(var dictionary: string);
+procedure ReadWordDictionary(var dictionary: TWordDictionary);
 var
   wordFile: TextFile;
 begin
-  AssignFile(wordFile, 'words.txt');
+  AssignFile(wordFile, DEFAULT_PATH);
   try
-   Reset(wordFile);
+   {Reset(wordFile);
    Readln(wordFile, dictionary);
    dictionary := UTF8toANSI(dictionary);
-   CloseFile(wordFile);
+   CloseFile(wordFile);}
   except
    Writeln('Не найден файл с банком слов');
   end;
@@ -106,22 +107,19 @@ begin
 
 end;
 
-function CheckWordInDictionary(word, dictionary: string): Boolean;
+function CheckWordInDictionary(word, dictionary: TWordDictionary): Boolean;
 (*var AddNewWord: Boolean;
     Choise: Char;*)
 begin
   //AddNewWord := False;
-  if pos(' ' + word + ' ', dictionary) <> 0 then
-  begin
-    Result := True;
-  end
   (*else
   begin
     writeln('Данного слова нет в словаре, хотите его добавить? Д/Н ');
     ReadLn(Choise);
     if Choise = 'Д' then
     begin
-      //AddToDictionary(dictionary);  надо поменять функции местами чтобы работало
+      //AddToDictionary
+      (dictionary);  надо поменять функции местами чтобы работало
     end;
   end; *)
 end;
@@ -131,7 +129,7 @@ begin
 
 end;
 
-procedure AddToDictionary(var dictionary: string);
+procedure AddToDictionary(var dictionary: TWordDictionary);
 begin
 
 end;
@@ -151,11 +149,8 @@ begin
 
 end;
 
-var
-  str: string;
+
 begin
-    ReadWordDictionary(str);
-    Writeln(str);
     Readln;
     { TODO -oUser -cConsole Main : написать функционал игры}
 
