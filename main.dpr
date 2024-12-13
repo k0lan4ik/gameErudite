@@ -180,8 +180,70 @@ begin
 end;
 
 procedure FriendHelp(var players: TPlayers; currentPlayer: Byte);
-begin
 
+procedure setout(letters:string);
+var
+  temp:integer;
+begin
+  for temp := 1 to length(letters) do
+    write(letters[temp], ' ');
+  writeln;
+end;
+
+var
+  temp, indexgivenchar, indextakenchar:integer;
+  givenchar, takenchar, tempchar:ansichar;
+  uncorrect:boolean;
+begin
+  write('Ваш набор букв: ');
+  setout(players[CurrentPlayer].letters);
+  temp:=0;
+  while temp < length(players) do
+  begin
+    if temp <> currentPlayer then
+    begin
+      write('Набор игрока ', temp+1, ': ');
+      setout(players[temp].letters);
+    end;
+    Inc(temp);
+  end;
+  uncorrect:=true;
+  while uncorrect do
+  begin
+    writeln('Выберите букву которую вы хотите поменять');
+    readln(givenchar);
+    indexgivenchar:=pos(givenchar, players[currentPlayer].letters);
+    if indexgivenchar <> 0 then
+      uncorrect:=false
+    else
+      writeln('У вас нет такой буквы');
+  end;
+  uncorrect:=true;
+  while uncorrect do
+  begin
+    writeln('Введите номер игрока с которым хотите поменяться');
+    readln(temp);
+    Dec(temp);
+    if temp = currentPlayer then
+      writeln('Вы не можете поменяться с собой')
+    else if (temp < 0) or (temp > length(players)-1) then
+      writeln ('Такого игрока не существует')
+    else
+      uncorrect:=false;
+  end;
+  uncorrect:=true;
+  while uncorrect do
+  begin
+    Writeln('Выберете букву которую хотите взять у игрока ', temp+1);
+    readln(takenchar);
+    indextakenchar:=pos(takenchar, players[temp].letters);
+    if indextakenchar <> 0 then
+      uncorrect:=false
+    else
+      writeln('У него нет такой буквы');
+  end;
+  players[currentPlayer].letters[indexgivenchar]:=takenchar;
+  players[temp].letters[indextakenchar]:=givenchar;
 end;
 
 function IsAllSkip(players: TPlayers): Boolean;
