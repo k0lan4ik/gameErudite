@@ -175,8 +175,33 @@ begin
 end;
 
 procedure FiftyFifty(var player: TPlayer;var bank:string);
+var change5: string;
+    correct_input: boolean;
+    i: integer;
 begin
+  i := 1;
+  correct_input := False;
+  while not correct_input do
+  begin
+    write('Введите буквы для обмена.');
+    readln(change5);
+    correct_input := True;
+    while (i < 6) and (correct_input) do
+    begin
+      if pos(change5[i], player.letters) = 0 then
+      begin
+      correct_input := False;
+      writeln('Неверный ввод. Не все введенные вами буквы имеются в вашем наборе.');
+      end;
+      i := i + 1;
+    end;
+  end;
 
+  for var k := 1 to 5 do
+  begin
+    delete(player.letters, pos(change5[k], player.letters, 1), 1);
+  end;
+  player.letters := player.letters + CutLetters(bank, 5);
 end;
 
 procedure FriendHelp(var players: TPlayers; currentPlayer: Byte);
@@ -198,7 +223,7 @@ begin
     CreateBankLetters(bank);
     ReadWordDictionary(dictionary);
     ReadPlayers(players,bank);
-
+    FiftyFifty(
     Readln;
 end.
 
