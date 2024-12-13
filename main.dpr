@@ -65,6 +65,14 @@ begin
 
 
 end;
+function CutLetters(var bank: string; count: TCountLetters): string;
+var
+  tempstring:string;
+begin
+  tempstring:=copy(bank, 1, count);
+  delete(bank, 1, count);
+  result:=tempstring;
+end;
 
 procedure ReadPlayers(var players: TPlayers; var bank: string);
 var n: Integer;
@@ -83,21 +91,17 @@ begin
       writeln('Недопустимое число игроков, введите другое число: ');
     end;
   end;
-  for var i := 1 to n do
+  SetLength(players, n);
+  for var i := 0 to n - 1 do
   begin
-    players[i].Letters := copy(bank, 1, 10);
-    delete(bank, 1, 10);
+    players[i].Letters := CutLetters(bank, 10);
+    players[i].points := 0;
+    players[i].fi_fi := true;
+    players[i].friendHelp := true;
   end;
 end;
 
-function CutLetters(var bank: string; count: TCountLetters): string;
-var
-  tempstring:string;
-begin
-  tempstring:=copy(bank, 1, count);
-  delete(bank, 1, count);
-  result:=tempstring;
-end;
+
 
 procedure Game(var players: TPlayers;var bank, dictionary: string);
 begin
