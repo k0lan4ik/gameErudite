@@ -1,4 +1,4 @@
-program main;
+﻿program main;
 
 {$APPTYPE CONSOLE}
 
@@ -179,7 +179,7 @@ begin
   correct_input := False;
   while not correct_input do
   begin
-    write('������� ����� ��� ������');
+    write('Введите буквы для обмена.');
     readln(change5);
     correct_input := True;
     while (i < 6) and (correct_input) do
@@ -187,7 +187,7 @@ begin
       if pos(change5[i], player.letters) = 0 then
       begin
       correct_input := False;
-      writeln('�������� ����. �� ��� ��������� ����� ������� � ����� ������ ����.');
+      writeln('Неверный ввод. Не все введенные вами буквы имеются в вашем наборе.');
       end;
       i := i + 1;
     end;
@@ -197,8 +197,7 @@ begin
   begin
     delete(player.letters, pos(change5[k], player.letters, 1), 1);
   end;
-  player.letters := copy(bank, 1, 5);
-  delete(bank, 1, 5);
+  player.letters := player.letters + CutLetters(bank, 5);
 end;
 
 procedure FriendHelp(var players: TPlayers; currentPlayer: Byte);
@@ -220,7 +219,7 @@ begin
     CreateBankLetters(bank);
     ReadWordDictionary(dictionary);
     ReadPlayers(players,bank);
-
+    FiftyFifty(
     Readln;
 end.
 
