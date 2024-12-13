@@ -19,7 +19,6 @@ type
       points: Integer;
       friendHelp: Boolean;
       fi_fi: Boolean;
-      prevSkip: Boolean;
   end;
   TPlayers = array [1..MAX_COUNT_PLAYERS] of TPlayer;
   TWordDictionary = array of string;
