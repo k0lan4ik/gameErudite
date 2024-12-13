@@ -1,4 +1,4 @@
-program main;
+п»їprogram main;
 
 {$APPTYPE CONSOLE}
 
@@ -8,7 +8,6 @@ uses
   System.SysUtils;
 
 const
-    MIN_COUNT_PLAYERS = 2;
     MAX_COUNT_PLAYERS = 10;
     DEFAULT_PATH = '/dictionary.txt';
 
@@ -30,7 +29,7 @@ var
   tempchar:char;
 begin
   randomize;
-  bank:='ааааббббввввггггддддеееежжжжззззииииййййккккллллммммннннооооппппррррссссттттууууффффххххццццччччшшшшщщщщъъъъыыыыььььээээююююяяяя';
+  bank:='Р°Р°Р°Р°Р±Р±Р±Р±РІРІРІРІРіРіРіРіРґРґРґРґРµРµРµРµР¶Р¶Р¶Р¶Р·Р·Р·Р·РёРёРёРёР№Р№Р№Р№РєРєРєРєР»Р»Р»Р»РјРјРјРјРЅРЅРЅРЅРѕРѕРѕРѕРїРїРїРїСЂСЂСЂСЂСЃСЃСЃСЃС‚С‚С‚С‚СѓСѓСѓСѓС„С„С„С„С…С…С…С…С†С†С†С†С‡С‡С‡С‡С€С€С€С€С‰С‰С‰С‰СЉСЉСЉСЉС‹С‹С‹С‹СЊСЊСЊСЊСЌСЌСЌСЌСЋСЋСЋСЋСЏСЏСЏСЏ';
   for i := 1 to 300 do
   begin
     j:=random(length(bank))+1;
@@ -42,44 +41,13 @@ begin
 end;
 
 procedure ReadWordDictionary(var dictionary: string);
-var
-  wordFile: TextFile;
 begin
-  AssignFile(wordFile, 'words.txt');
-  try
-   Reset(wordFile);
-   Readln(wordFile, dictionary);
-   dictionary := UTF8toANSI(dictionary);
-   CloseFile(wordFile);
-  except
-   Writeln('Не найден файл с банком слов');
-  end;
-
 
 end;
 
 procedure ReadPlayers(var players: TPlayers; var bank: string);
-var n: Integer;
-    correct: Boolean;
 begin
-  correct := True;
-  while Correct do
-    begin
-    ReadLn(n);
-    if (MIN_COUNT_PLAYERS <= n) and (n <= MAX_COUNT_PLAYERS) then
-    begin
-      Correct := False;
-    end
-    else
-    begin
-      writeln('Недопустимое число игроков, введите другое число: ');
-    end;
-  end;
-  for var i := 1 to n do
-  begin
-    players[i].Letters := copy(bank, 1, 10);
-    delete(bank, 1, 10);
-  end;
+
 end;
 
 function CutLetters(var bank: string; count: TCountLetters): string;
@@ -107,23 +75,8 @@ begin
 end;
 
 function CheckWordInDictionary(word, dictionary: string): Boolean;
-(*var AddNewWord: Boolean;
-    Choise: Char;*)
 begin
-  //AddNewWord := False;
-  if pos(' ' + word + ' ', dictionary) <> 0 then
-  begin
-    Result := True;
-  end
-  (*else
-  begin
-    writeln('Данного слова нет в словаре, хотите его добавить? Д/Н ');
-    ReadLn(Choise);
-    if Choise = 'Д' then
-    begin
-      //AddToDictionary(dictionary);  надо поменять функции местами чтобы работало
-    end;
-  end; *)
+
 end;
 
 function IsAllAgreement(playersCount: Byte): Boolean;
@@ -151,14 +104,13 @@ begin
 
 end;
 
-var
-  str: string;
 begin
-    ReadWordDictionary(str);
-    Writeln(str);
-    Readln;
-    { TODO -oUser -cConsole Main : написать функционал игры}
-
+  try
+    { TODO -oUser -cConsole Main : РЅР°РїРёСЃР°С‚СЊ С„СѓРЅРєС†РёРѕРЅР°Р» РёРіСЂС‹}
+  except
+    on E: Exception do
+      Writeln(E.ClassName, ': ', E.Message);
+  end;
 end.
 
 
