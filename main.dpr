@@ -107,7 +107,7 @@ begin
 
 end;
 
-function CheckWordInDictionary(var word: String; dictionary: TWordDictionary): Boolean;
+function CheckWordInDictionary(word: String; dictionary: TWordDictionary): Boolean;
 (*var AddNewWord: Boolean;
     Choise: Char;*)
 var FindSome: Boolean;
@@ -117,7 +117,7 @@ begin
   FindSome := True;
   lengthDictionary := StrToInt(dictionary[0]) div 2;
   summ := lengthDictionary;
-  while (FindSome) and (lengthDictionary <> 0) do
+  while (FindSome) and (summ <> 0) do
   begin
     if word < dictionary[lengthDictionary] then
     begin
@@ -180,6 +180,13 @@ end;
 
 
 begin
+    (*var d : TWordDictionary;
+    SetLength(d, 4);
+    d[0] := '3';
+    d[1] := 'собак';
+    d[2] := 'кот';
+    d[3] := 'корова';
+    writeln(CheckWordInDictionary('собака', d));  *)
     Readln;
     { TODO -oUser -cConsole Main : написать функционал игры}
 
