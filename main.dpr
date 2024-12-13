@@ -8,6 +8,7 @@ uses
   System.SysUtils;
 
 const
+    MIN_COUNT_PLAYERS = 2;
     MAX_COUNT_PLAYERS = 10;
     DEFAULT_PATH = '/dictionary.txt';
 
@@ -46,8 +47,27 @@ begin
 end;
 
 procedure ReadPlayers(var players: TPlayers; var bank: string);
+var n: Integer;
+    correct: Boolean;
 begin
-
+  correct := True;
+  while Correct do
+    begin
+    ReadLn(n);
+    if (MIN_COUNT_PLAYERS <= n) and (n <= MAX_COUNT_PLAYERS) then
+    begin
+      Correct := False;
+    end
+    else
+    begin
+      writeln('Недопустимое число игроков, введите другое число: ');
+    end;
+  end;
+  for var i := 1 to n do
+  begin
+    players[i].Letters := copy(bank, 1, 10);
+    delete(bank, 1, 10);
+  end;
 end;
 
 function CutLetters(var bank: string; count: TCountLetters): string;
