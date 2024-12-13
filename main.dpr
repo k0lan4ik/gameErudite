@@ -25,13 +25,36 @@ type
   TCountLetters = 1..10;
 
 procedure CreateBankLetters(var bank: string);
+var
+  i, j, k:integer;
+  tempchar:char;
 begin
-
-
+  randomize;
+  bank:='אאאאבבבבגגגגדדדדההההווווזזזזחחחחטטטטייייךךךךככככללללםםםםממממןןןןננננססססעעעעףףףףפפפפץץץץצצצצקקקקררררששששתתתתûûûûüüüü‎‎‎‎‏‏‏‏ÿÿÿÿ';
+  for i := 1 to 300 do
+  begin
+    j:=random(128)+1;
+    k:=random(128)+1;
+    tempchar:=bank[k];
+    bank[k]:=bank[j];
+    bank[j]:=tempchar;
+  end;
 end;
 
 procedure ReadWordDictionary(var dictionary: string);
+var
+  wordFile: TextFile;
 begin
+  AssignFile(wordFile, 'words.txt');
+  try
+   Reset(wordFile);
+   Readln(wordFile, dictionary);
+   dictionary := UTF8toANSI(dictionary);
+   CloseFile(wordFile);
+  except
+   Writeln('Íו םאיהום פאיכ ס באםךמל סכמג');
+  end;
+
 
 end;
 
@@ -124,13 +147,14 @@ begin
 
 end;
 
+var
+  str: string;
 begin
-  try
+    ReadWordDictionary(str);
+    Writeln(str);
+    Readln;
     { TODO -oUser -cConsole Main : םאןטסאעü פףםךצטמםאכ טדנû}
-  except
-    on E: Exception do
-      Writeln(E.ClassName, ': ', E.Message);
-  end;
+
 end.
 
 
