@@ -309,15 +309,25 @@ begin
 end;
 
 function IsAllSkip(players: TPlayers): Boolean;
+var
+  temp:integer;
+  skip:boolean;
 begin
-
+  temp:=low(players);
+  skip:=true;
+  while skip and (temp <= high(players)) do
+  begin
+    if players[temp].lastletter <> ' ' then
+      skip:=false;
+    Inc(temp);
+  end;
+  result:=skip;
 end;
 
 var
   bank: string;
   dictionary: TWordDictionary;
   players: TPlayers;
-
 begin
     CreateBankLetters(bank);
     ReadWordDictionary(dictionary);
