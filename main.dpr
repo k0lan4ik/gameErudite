@@ -256,14 +256,88 @@ begin
   player.letters := player.letters + CutLetters(bank, 5);
 end;
 
-procedure friendHelp(var players: TPlayers; currentPlayer: Byte);
-begin
 
+procedure FriendHelp(var players: TPlayers; currentPlayer: Byte);
+var
+  temp, indexgivenchar, indextakenchar, correctvalue:integer;
+  givenchar, takenchar, tempchar:ansichar;
+  tempstring: string;
+  uncorrect:boolean;
+begin
+  write('Ваш набор букв: ');
+  setout(players[CurrentPlayer].letters);
+  temp:=0;
+  while temp < length(players) do
+  begin
+    if temp <> currentPlayer then
+    begin
+      write('Набор игрока ', temp+1, ': ');
+      setout(players[temp].letters);
+    end;
+    Inc(temp);
+  end;
+  uncorrect:=true;
+  while uncorrect do
+  begin
+    writeln('Выберите букву которую вы хотите поменять');
+    readln(givenchar);
+    indexgivenchar:=pos(givenchar, players[currentPlayer].letters);
+    if indexgivenchar <> 0 then
+      uncorrect:=false
+    else
+      writeln('У вас нет такой буквы');
+  end;
+  uncorrect:=true;
+  while uncorrect do
+  begin
+    correctvalue:=1;
+    while correctvalue <> 0 do
+    begin
+      writeln('Введите номер игрока с которым хотите поменяться');
+      readln(tempstring);
+      temp:=length(tempstring);
+      while tempstring[temp] = ' ' do
+        Dec(temp);
+      delete(tempstring, temp+1, length(tempstring)-temp);
+      Val(tempstring, temp, correctvalue);
+    end;
+    Dec(temp);
+    if temp = currentPlayer then
+      writeln('Вы не можете поменяться с собой')
+    else if (temp < 0) or (temp > length(players)-1) then
+      writeln ('Такого игрока не существует')
+    else
+      uncorrect:=false;
+  end;
+  uncorrect:=true;
+  while uncorrect do
+  begin
+    Writeln('Выберете букву которую хотите взять у игрока ', temp+1);
+    readln(takenchar);
+    indextakenchar:=pos(takenchar, players[temp].letters);
+    if indextakenchar <> 0 then
+      uncorrect:=false
+    else
+      writeln('У него нет такой буквы');
+  end;
+  players[currentPlayer].letters[indexgivenchar]:=takenchar;
+  players[temp].letters[indextakenchar]:=givenchar;
 end;
 
 function IsAllSkip(players: TPlayers): Boolean;
+var
+  temp:integer;
+  skip:boolean;
 begin
-
+  temp:=low(players);
+  skip:=true;
+  while skip and (temp <= high(players)) do
+  begin
+    if players[temp].lastletter <> ' ' then
+      skip:=false;
+    Inc(temp);
+  end;
+  result:=skip;
 end;
 
 var
