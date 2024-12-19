@@ -55,7 +55,7 @@ begin
     SetLength(dictionary, StrToInt(word) + 1);
     for i := Low(dictionary) to High(dictionary) do
     begin
-      dictionary[i] := UTF8ToANSI(word);
+      dictionary[i] := word;
       Readln(wordFile, word);
     end;
     CloseFile(wordFile);
@@ -125,11 +125,9 @@ var
   f: TextFile;
 begin
   len := length(dictionary);
-  if index >= len then
-    index := len + 1;
-  SetLength(dictionary, len + 1);
-  Move(dictionary[index], dictionary[index + 1],
-    (len - index) * sizeof(dictionary[index]));
+  Insert(word, dictionary, index);
+  { Move(dictionary[index], dictionary[index + 1],
+    (len - index - 1)); }
   dictionary[Index] := word;
   dictionary[0] := IntToStr(StrToInt(dictionary[0]) + 1);
   AssignFile(f, DEFAULT_PATH);
@@ -144,39 +142,38 @@ function CheckWordInDictionary(word: string;
 (* var AddNewWord: Boolean;
   Choise: Char; *)
 var
-  FindSome: Boolean;
-  lengthDictionary: Integer;
-  summ: Integer;
+  left, right, mid, index: Integer;
 begin
-  FindSome := True;
-  lengthDictionary := StrToInt(dictionary[0]) div 2;
-  summ := lengthDictionary;
-  while (FindSome) and (summ <> 0) do
+  result := False;
+  left := 1;
+  right := StrToInt(dictionary[0]);
+  while (left <= right) do
   begin
-    if word < dictionary[lengthDictionary] then
+    mid := (left + right) div 2;
+    if word = dictionary[mid] then
     begin
-      summ := summ div 2;
-      lengthDictionary := lengthDictionary - summ;
+      Result := True;
+      left := right + 1;
     end
-    else if word > dictionary[lengthDictionary] then
+    else if word > dictionary[mid] then
     begin
-      summ := lengthDictionary div 2;
-      lengthDictionary := lengthDictionary + summ;
+      left := mid + 1;
+      index := left;
     end
     else
     begin
-      result := True;
-      FindSome := False;
+      right := mid - 1;
+      index := mid;
     end;
   end;
-  if FindSome then
+  if not Result then
   begin
     Writeln('Нет такого слова (0 если есть)');
     var
       i: string;
     Readln(i);
     if i = '0' then
-      AddToDictionary(dictionary, word, lengthDictionary);
+      AddToDictionary(dictionary, word, index);
     result := False;
   end;
 end;
@@ -256,88 +253,87 @@ begin
   player.letters := player.letters + CutLetters(bank, 5);
 end;
 
-
-procedure FriendHelp(var players: TPlayers; currentPlayer: Byte);
+procedure friendHelp(var players: TPlayers; currentPlayer: Byte);
 var
-  temp, indexgivenchar, indextakenchar, correctvalue:integer;
-  givenchar, takenchar, tempchar:ansichar;
+  temp, indexgivenchar, indextakenchar, correctvalue: Integer;
+  givenchar, takenchar, tempchar: ansichar;
   tempstring: string;
-  uncorrect:boolean;
+  uncorrect: Boolean;
 begin
   write('Ваш набор букв: ');
-  setout(players[CurrentPlayer].letters);
-  temp:=0;
+  // setout(players[CurrentPlayer].letters);
+  temp := 0;
   while temp < length(players) do
   begin
     if temp <> currentPlayer then
     begin
-      write('Набор игрока ', temp+1, ': ');
-      setout(players[temp].letters);
+      write('Набор игрока ', temp + 1, ': ');
+      // setout(players[temp].letters);
     end;
     Inc(temp);
   end;
-  uncorrect:=true;
+  uncorrect := True;
   while uncorrect do
   begin
-    writeln('Выберите букву которую вы хотите поменять');
-    readln(givenchar);
-    indexgivenchar:=pos(givenchar, players[currentPlayer].letters);
+    Writeln('Выберите букву которую вы хотите поменять');
+    Readln(givenchar);
+    indexgivenchar := pos(givenchar, players[currentPlayer].letters);
     if indexgivenchar <> 0 then
-      uncorrect:=false
+      uncorrect := False
     else
-      writeln('У вас нет такой буквы');
+      Writeln('У вас нет такой буквы');
   end;
-  uncorrect:=true;
+  uncorrect := True;
   while uncorrect do
   begin
-    correctvalue:=1;
+    correctvalue := 1;
     while correctvalue <> 0 do
     begin
-      writeln('Введите номер игрока с которым хотите поменяться');
-      readln(tempstring);
-      temp:=length(tempstring);
+      Writeln('Введите номер игрока с которым хотите поменяться');
+      Readln(tempstring);
+      temp := length(tempstring);
       while tempstring[temp] = ' ' do
         Dec(temp);
-      delete(tempstring, temp+1, length(tempstring)-temp);
+      delete(tempstring, temp + 1, length(tempstring) - temp);
       Val(tempstring, temp, correctvalue);
     end;
     Dec(temp);
     if temp = currentPlayer then
-      writeln('Вы не можете поменяться с собой')
-    else if (temp < 0) or (temp > length(players)-1) then
-      writeln ('Такого игрока не существует')
+      Writeln('Вы не можете поменяться с собой')
+    else if (temp < 0) or (temp > length(players) - 1) then
+      Writeln('Такого игрока не существует')
     else
-      uncorrect:=false;
+      uncorrect := False;
   end;
-  uncorrect:=true;
+  uncorrect := True;
   while uncorrect do
   begin
-    Writeln('Выберете букву которую хотите взять у игрока ', temp+1);
-    readln(takenchar);
-    indextakenchar:=pos(takenchar, players[temp].letters);
+    Writeln('Выберете букву которую хотите взять у игрока ', temp + 1);
+    Readln(takenchar);
+    indextakenchar := pos(takenchar, players[temp].letters);
     if indextakenchar <> 0 then
-      uncorrect:=false
+      uncorrect := False
     else
-      writeln('У него нет такой буквы');
+      Writeln('У него нет такой буквы');
   end;
-  players[currentPlayer].letters[indexgivenchar]:=takenchar;
-  players[temp].letters[indextakenchar]:=givenchar;
+  players[currentPlayer].letters[indexgivenchar] := takenchar;
+  players[temp].letters[indextakenchar] := givenchar;
 end;
 
 function IsAllSkip(players: TPlayers): Boolean;
 var
-  temp:integer;
-  skip:boolean;
+  temp: Integer;
+  skip: Boolean;
 begin
-  temp:=low(players);
-  skip:=true;
+  temp := low(players);
+  skip := True;
   while skip and (temp <= high(players)) do
   begin
-    if players[temp].lastletter <> ' ' then
-      skip:=false;
+    if players[temp].lastLetter <> ' ' then
+      skip := False;
     Inc(temp);
   end;
-  result:=skip;
+  result := skip;
 end;
 
 var
