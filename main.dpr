@@ -232,14 +232,6 @@ begin
   player.letters := player.letters + CutLetters(bank, 5);
 end;
 
-procedure setout(letters:string);
-var
-  temp:integer;
-begin
-  for temp := 1 to length(letters) do
-    write(letters[temp], ' ');
-  writeln;
-end;
 
 procedure FriendHelp(var players: TPlayers; currentPlayer: Byte);
 var
@@ -332,6 +324,7 @@ begin
     CreateBankLetters(bank);
     ReadWordDictionary(dictionary);
     ReadPlayers(players,bank);
+    FiftyFifty(players[0], bank);
     Readln;
 end.
 
