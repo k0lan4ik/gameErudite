@@ -232,9 +232,6 @@ begin
   player.letters := player.letters + CutLetters(bank, 5);
 end;
 
-
-procedure FriendHelp(var players: TPlayers; currentPlayer: Byte);
-
 procedure setout(letters:string);
 var
   temp:integer;
@@ -244,9 +241,11 @@ begin
   writeln;
 end;
 
+procedure FriendHelp(var players: TPlayers; currentPlayer: Byte);
 var
-  temp, indexgivenchar, indextakenchar:integer;
+  temp, indexgivenchar, indextakenchar, correctvalue:integer;
   givenchar, takenchar, tempchar:ansichar;
+  tempstring: string;
   uncorrect:boolean;
 begin
   write('Ваш набор букв: ');
@@ -275,8 +274,17 @@ begin
   uncorrect:=true;
   while uncorrect do
   begin
-    writeln('Введите номер игрока с которым хотите поменяться');
-    readln(temp);
+    correctvalue:=1;
+    while correctvalue <> 0 do
+    begin
+      writeln('Введите номер игрока с которым хотите поменяться');
+      readln(tempstring);
+      temp:=length(tempstring);
+      while tempstring[temp] = ' ' do
+        Dec(temp);
+      delete(tempstring, temp+1, length(tempstring)-temp);
+      Val(tempstring, temp, correctvalue);
+    end;
     Dec(temp);
     if temp = currentPlayer then
       writeln('Вы не можете поменяться с собой')
@@ -314,7 +322,6 @@ begin
     CreateBankLetters(bank);
     ReadWordDictionary(dictionary);
     ReadPlayers(players,bank);
-    FiftyFifty(players[0], bank);
     Readln;
 end.
 
