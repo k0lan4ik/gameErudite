@@ -116,13 +116,10 @@ end;
 procedure AddToDictionary(var dictionary: TWordDictionary; word: string;
   index: Integer);
 var
-  len, value, cod, i: Integer;
+  value, cod, i: Integer;
   f: TextFile;
 begin
-  len := length(dictionary);
   Insert(word, dictionary, index);
-  { Move(dictionary[index], dictionary[index + 1],
-    (len - index - 1)); }
   dictionary[Index] := word;
   dictionary[0] := IntToStr(StrToInt(dictionary[0]) + 1);
   AssignFile(f, DEFAULT_PATH);
