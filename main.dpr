@@ -107,9 +107,28 @@ begin
 
 end;
 
+procedure Setout(letters: string);
+var
+  temp: Integer;
+begin
+  for temp := Low(letters) to High(letters) do
+    write(letters[temp], ' ');
+  Writeln;
+end;
+
 procedure PlayerStep(var players: TPlayers; var bank, dictionary: string;
   currentPlayer: Byte);
+var
+  curPlayer: TPlayer;
+  word: string;
 begin
+  curPlayer := Players[currentPlayer];
+  Writeln('Ход игрока ', currentPlayer + 1);
+  Write('Набор букв игрока: ');
+  Setout(curPlayer.letters);
+  Write('Ввндите слово: ');
+  Readln(word);
+
 
 end;
 
@@ -149,7 +168,7 @@ begin
     mid := (left + right) div 2;
     if word = dictionary[mid] then
     begin
-      Result := True;
+      result := True;
       left := right + 1;
     end
     else if word > dictionary[mid] then
@@ -163,7 +182,7 @@ begin
       index := mid;
     end;
   end;
-  if not Result then
+  if not result then
   begin
     Writeln('Нет такого слова (0 если есть)');
     var
@@ -250,16 +269,7 @@ begin
   player.letters := player.letters + CutLetters(bank, 5);
 end;
 
-procedure setout(letters:string);
-var
-  temp:integer;
-begin
-  for temp := 1 to length(letters) do
-    write(letters[temp], ' ');
-  writeln;
-end;
-
-procedure FriendHelp(var players: TPlayers; currentPlayer: Byte);
+procedure friendHelp(var players: TPlayers; currentPlayer: Byte);
 var
   temp, indexgivenchar, indextakenchar, correctvalue: Integer;
   givenchar, takenchar, tempchar: ansichar;
@@ -267,14 +277,14 @@ var
   uncorrect: Boolean;
 begin
   write('Ваш набор букв: ');
-  // setout(players[CurrentPlayer].letters);
+  Setout(players[currentPlayer].letters);
   temp := 0;
   while temp < length(players) do
   begin
     if temp <> currentPlayer then
     begin
       write('Набор игрока ', temp + 1, ': ');
-      // setout(players[temp].letters);
+      Setout(players[temp].letters);
     end;
     Inc(temp);
   end;
