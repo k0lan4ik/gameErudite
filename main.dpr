@@ -121,10 +121,9 @@ end;
 procedure AddToDictionary(var dictionary: TWordDictionary; word: string;
   index: Integer);
 var
-  len, value, cod, i: Integer;
+  value, cod, i: Integer;
   f: TextFile;
 begin
-  len := length(dictionary);
   Insert(word, dictionary, index);
   dictionary[Index] := word;
   dictionary[0] := IntToStr(StrToInt(dictionary[0]) + 1);
@@ -251,7 +250,16 @@ begin
   player.letters := player.letters + CutLetters(bank, 5);
 end;
 
-procedure friendHelp(var players: TPlayers; currentPlayer: Byte);
+procedure setout(letters:string);
+var
+  temp:integer;
+begin
+  for temp := 1 to length(letters) do
+    write(letters[temp], ' ');
+  writeln;
+end;
+
+procedure FriendHelp(var players: TPlayers; currentPlayer: Byte);
 var
   temp, indexgivenchar, indextakenchar, correctvalue: Integer;
   givenchar, takenchar, tempchar: ansichar;
