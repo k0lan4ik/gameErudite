@@ -1,4 +1,4 @@
-program main;
+﻿program main;
 
 {$APPTYPE CONSOLE}
 {$R *.res}
@@ -100,11 +100,6 @@ begin
     players[i].fi_fi := True;
     players[i].friendHelp := True;
   end;
-end;
-
-procedure Game(var players: TPlayers; var bank, dictionary: string);
-begin
-
 end;
 
 procedure PlayerStep(var players: TPlayers; var bank, dictionary: string;
@@ -343,6 +338,22 @@ begin
     Inc(temp);
   end;
   result := skip;
+end;
+
+procedure Game(var players: TPlayers; var bank, dictionary: string);
+var
+  currentplayer, maxplayer:integer;
+begin
+  currentplayer:=Low(players);
+  maxplayer:=High(players);
+  while not IsAllSkip(players) do
+  begin
+    PlayerStep(players, bank, dictionary, currentplayer);
+    if currentplayer = maxplayer then
+      currentplayer:=Low(players)
+    else
+      Inc(currentplayer);
+  end;
 end;
 
 var
