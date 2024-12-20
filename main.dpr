@@ -144,8 +144,6 @@ var
 begin
   len := length(dictionary);
   Insert(word, dictionary, index);
-  { Move(dictionary[index], dictionary[index + 1],
-    (len - index - 1)); }
   dictionary[Index] := word;
   dictionary[0] := IntToStr(StrToInt(dictionary[0]) + 1);
   AssignFile(f, DEFAULT_PATH);
