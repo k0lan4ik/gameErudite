@@ -107,15 +107,18 @@ begin
 
 end;
 
-procedure PlayerStep(var players: TPlayers; var bank, dictionary: string;
-  currentPlayer: Byte);
+procedure Setout(letters: string);
+var
+  temp: Integer;
 begin
-
+  for temp := Low(letters) to High(letters) do
+    write(letters[temp], ' ');
+  Writeln;
 end;
 
-function CheckWordInPlayer(word, letters: string): Boolean;
+function CheckLettersInPlayer(word, letters: string): Boolean;
 begin
-
+  result := True;
 end;
 
 procedure AddToDictionary(var dictionary: TWordDictionary; word: string;
@@ -134,12 +137,12 @@ begin
   CloseFile(f);
 end;
 
-function CheckWordInDictionary(word: string;
-  var dictionary: TWordDictionary): Boolean;
+function CheckWordInDictionary(word: string; var dictionary: TWordDictionary;
+  var index: Integer): Boolean;
 (* var AddNewWord: Boolean;
   Choise: Char; *)
 var
-  left, right, mid, index: Integer;
+  left, right, mid: Integer;
 begin
   result := False;
   left := 1;
@@ -149,7 +152,7 @@ begin
     mid := (left + right) div 2;
     if word = dictionary[mid] then
     begin
-      Result := True;
+      result := True;
       left := right + 1;
     end
     else if word > dictionary[mid] then
@@ -163,14 +166,8 @@ begin
       index := mid;
     end;
   end;
-  if not Result then
+  if not result then
   begin
-    Writeln('Нет такого слова (0 если есть)');
-    var
-      i: string;
-    Readln(i);
-    if i = '0' then
-      AddToDictionary(dictionary, word, index);
     result := False;
   end;
 end;
@@ -250,16 +247,7 @@ begin
   player.letters := player.letters + CutLetters(bank, 5);
 end;
 
-procedure setout(letters:string);
-var
-  temp:integer;
-begin
-  for temp := 1 to length(letters) do
-    write(letters[temp], ' ');
-  writeln;
-end;
-
-procedure FriendHelp(var players: TPlayers; currentPlayer: Byte);
+procedure friendHelp(var players: TPlayers; currentPlayer: Byte);
 var
   temp, indexgivenchar, indextakenchar, correctvalue: Integer;
   givenchar, takenchar, tempchar: ansichar;
@@ -267,14 +255,14 @@ var
   uncorrect: Boolean;
 begin
   write('Ваш набор букв: ');
-  // setout(players[CurrentPlayer].letters);
+  Setout(players[currentPlayer].letters);
   temp := 0;
   while temp < length(players) do
   begin
     if temp <> currentPlayer then
     begin
       write('Набор игрока ', temp + 1, ': ');
-      // setout(players[temp].letters);
+      Setout(players[temp].letters);
     end;
     Inc(temp);
   end;
@@ -342,6 +330,94 @@ begin
   result := skip;
 end;
 
+procedure PlayerStep(var players: TPlayers; var bank: string;
+  var dictionary: TWordDictionary; currentPlayer, prevPlayer: Byte);
+var
+  isRight, isWord: Boolean;
+  word, agree: string;
+  index: Integer;
+begin
+  Writeln('Ход игрока ', currentPlayer + 1);
+
+  isWord := False;
+  while not isWord do
+  begin
+    Write('Набор букв игрока: ');
+    Setout(players[currentPlayer].letters);
+
+    if players[currentPlayer].fi_fi or players[currentPlayer].friendHelp then
+    begin
+      Write('У вас остались бонусы:');
+      if players[currentPlayer].fi_fi then
+        Write('"50-на-50" ');
+      if players[currentPlayer].friendHelp then
+        Write('"помощь друга"');
+      Writeln;
+    end
+    else
+      Write('У вас не осталось подсказок');
+
+    Write('Введите слово или название подсказки в кавычках: ');
+    Readln(word);
+    word := Trim(word);
+    if (word = '"50-на-50"') and players[currentPlayer].fi_fi then
+    begin
+      FiftyFifty(players[currentPlayer], bank);
+      players[currentPlayer].fi_fi := False;
+    end
+    else if (word = '"помощь друга"') and players[currentPlayer].friendHelp then
+    begin
+      friendHelp(players, currentPlayer);
+      players[currentPlayer].friendHelp := False;
+    end
+    else
+      isWord := True;
+  end;
+  if word = '' then
+    players[currentPlayer].lastLetter := ' '
+  else if CheckWordInDictionary(word, dictionary, index) then
+  begin
+    isRight := CheckLettersInPlayer(word, players[currentPlayer].letters)
+  end
+  else
+  begin
+    Writeln('Такого слова нет, хотите добавить в словарь?(да, нет):');
+    Readln(agree);
+    if agree = 'да' then
+    begin
+      if IsAllAgreement(length(players)) then
+      begin
+        AddToDictionary(dictionary, word, index);
+        isRight := CheckLettersInPlayer(word, players[currentPlayer].letters)
+      end
+      else
+      begin
+        isRight := False;
+      end;
+    end
+    else
+    begin
+      isRight := False;
+    end;
+
+  end;
+  if isRight then
+  begin
+    Writeln('Вы правильно ввели слово');
+    players[currentPlayer].lastLetter := word[High(word)];
+    if word[Low(word)] = players[prevPlayer].lastLetter then
+      Inc(players[currentPlayer].points, length(word) * 2)
+    else
+      Inc(players[currentPlayer].points, length(word));
+  end
+  else
+  begin
+    Dec(players[currentPlayer].points, length(word));
+    Writeln('Вы неправильно ввели слово');
+  end;
+  Writeln('Ваши очки: ', players[currentPlayer].points);
+end;
+
 var
   bank: string;
   dictionary: TWordDictionary;
@@ -349,17 +425,11 @@ var
   word: string;
 
 begin
-  // CreateBankLetters(bank);
+  CreateBankLetters(bank);
   ReadWordDictionary(dictionary);
-  // ReadPlayers(players, bank);
+  ReadPlayers(players, bank);
+  PlayerStep(players, bank, dictionary, 0, High(players));
   // FiftyFifty(players[0], bank);
-  // Readln;}
-  While True do
-  begin
-    Readln(word);
-    if CheckWordInDictionary(word, dictionary) then
-      Writeln('Слово есть');
-  end;
-  Readln;
+  Readln
 
 end.
