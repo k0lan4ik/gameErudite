@@ -420,6 +420,7 @@ begin
       Inc(players[currentPlayer].points, length(word) * 2)
     else
       Inc(players[currentPlayer].points, length(word));
+    players[currentPlayer].letters := players[currentPlayer].letters + CutLetters(bank, Length(word));
   end
   else
   begin
