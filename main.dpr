@@ -394,7 +394,17 @@ begin
   AssignFile(RuleFile, DEFAULT_PATH_RULE);
   Reset(RuleFile);
   Readln(RuleFile,rule);
-  Writeln(rule);
+  Writeln(UTF8ToANSI(rule));
+end;
+
+procedure DeleteLettersInPlayer(var player:TPlayer; word:string);
+var
+  temp:integer;
+begin
+  for temp := 1 to length(word) do
+  begin
+    delete(player.letters, pos(word[temp], player.letters), 1);
+  end;
 end;
 
 procedure DeleteLettersInPlayer(var letters, word:string);
@@ -458,9 +468,7 @@ begin
   end
   else
   begin
-    Writeln('Такого слова нет, хотите добавить в словарь?(да, нет):');
-    Readln(agree);
-    if agree = 'да' then
+    if YesNo('Такого слова нет, хотите добавить в словарь?(да, нет) ') then
     begin
       if IsAllAgreement(length(players), currentplayer) then
       begin
@@ -486,6 +494,7 @@ begin
       Inc(players[currentPlayer].points, length(word) * 2)
     else
       Inc(players[currentPlayer].points, length(word));
+    DeleteLettersInPlayer(players[currentPlayer],word);
     players[currentPlayer].letters := players[currentPlayer].letters +
       CutLetters(bank, length(word));
   end
@@ -530,8 +539,8 @@ begin
     prevplayer :=currentplayer - 1;
   while not IsAllSkip(players) do
   begin
-    PlayerStep(players, bank, dictionary, currentplayer, prevplayer);
     SaveGame(players, bank, currentPlayer, SaveName);
+    PlayerStep(players, bank, dictionary, currentplayer, prevplayer);
     if currentplayer = High(players) then
       currentplayer:=Low(players)
     else
@@ -593,9 +602,8 @@ begin
   if not CreateDir(DEFAULT_DIR_SAVE) and (FindFirst(DEFAULT_DIR_SAVE + '\*' + DEFAULT_FORM_SAVE, faAnyFile, sr) = 0)
   then
   begin
-    Writeln('Загрузить сохранение? (да\нет)');
-    Readln(word);
-    if Trim(word) = 'да' then
+
+    if YesNo('Загрузить сохранение? (да\нет) ') then
     begin
       Writeln('Выберите сохранение: ');
       begin
@@ -615,10 +623,11 @@ begin
       end
       else
         Writeln('// что-то не так');
-
-    end;
+    end
+    else
+      i := 0;
   end;
-  if Trim(word) <> 'да' then
+  if i = 0 then
   begin
     currentPlayer := 0;
     SaveName := FormatDateTime('dd_mm_yyyy_hhmmss', Now);
