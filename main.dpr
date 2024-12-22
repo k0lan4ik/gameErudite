@@ -420,12 +420,14 @@ begin
 
 end;
 
-procedure Game(var players: TPlayers; var bank: string;var dictionary:TWordDictionary);
+procedure Game(var players: TPlayers; var bank: string;var dictionary:TWordDictionary;var currentplayer:integer);
 var
-  prevplayer, currentplayer, temp, maxpoints:integer;
+  prevplayer, temp, maxpoints:integer;
 begin
-  currentplayer:=Low(players);
-  prevplayer:=High(players);
+  if currentplayer = Low(players) then
+    prevplayer := High(players)
+  else
+    prevplayer :=currentplayer - 1;
   while not IsAllSkip(players) do
   begin
     PlayerStep(players, bank, dictionary, currentplayer, prevplayer);
