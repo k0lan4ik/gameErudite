@@ -104,11 +104,6 @@ begin
   end;
 end;
 
-procedure Game(var players: TPlayers; var bank, dictionary: string);
-begin
-
-end;
-
 procedure Setout(letters: string);
 var
   temp: Integer;
@@ -332,6 +327,11 @@ begin
   result := skip;
 end;
 
+procedure gamerule;
+begin
+  writeln('правила');
+end;
+
 procedure PlayerStep(var players: TPlayers; var bank: string;
   var dictionary: TWordDictionary; currentPlayer, prevPlayer: Byte);
 var
@@ -420,6 +420,89 @@ begin
     Writeln('Вы неправильно ввели слово');
   end;
   Writeln('Ваши очки: ', players[currentPlayer].points);
+
+end;
+
+procedure Game(var players: TPlayers; var bank: string;var dictionary:TWordDictionary;var currentplayer:integer);
+var
+  prevplayer, temp, maxpoints:integer;
+begin
+  if currentplayer = Low(players) then
+    prevplayer := High(players)
+  else
+    prevplayer :=currentplayer - 1;
+  while not IsAllSkip(players) do
+  begin
+    PlayerStep(players, bank, dictionary, currentplayer, prevplayer);
+    if currentplayer = High(players) then
+      currentplayer:=Low(players)
+    else
+      Inc(currentplayer);
+    if prevplayer = High(players) then
+      prevplayer:=Low(players)
+    else
+      Inc(prevplayer);
+  end;
+
+  maxpoints:=players[low(players)].points;
+  for temp := Low(players) to High(players) do
+  begin
+    if players[temp].points > maxpoints then
+      maxpoints:=players[temp].points;
+  end;
+  for temp := Low(players) to High(players) do
+  begin
+    if players[temp].points = maxpoints then
+      writeln('Победил игрок ', temp+1, ' набрав ', maxpoints);
+  end;
+end;
+
+procedure SaveGame(players: TPlayers; bank: string; currentPlayer: Integer;
+  SaveName: string);
+var
+  SaveFile: TextFile;
+  i: Integer;
+begin
+  AssignFile(SaveFile, DEFAULT_DIR_SAVE + '\' + SaveName + DEFAULT_FORM_SAVE);
+  Rewrite(SaveFile);
+  Writeln(SaveFile, length(players));
+  for i := Low(players) to High(players) do
+  begin
+    Writeln(SaveFile, players[i].letters);
+    Writeln(SaveFile, players[i].lastLetter);
+    Writeln(SaveFile, players[i].points);
+    Writeln(SaveFile, players[i].friendHelp);
+    Writeln(SaveFile, players[i].fi_fi);
+  end;
+  Writeln(SaveFile, currentPlayer);
+  Writeln(SaveFile, bank);
+  CloseFile(SaveFile);
+end;
+
+procedure ReadSave(var players: TPlayers; var bank:string; var currentPlayer: Integer;
+  SaveName: string);
+var
+  SaveFile: TextFile;
+  i, len: Integer;
+  str: string;
+begin
+  AssignFile(SaveFile, DEFAULT_DIR_SAVE + '\' + SaveName + DEFAULT_FORM_SAVE);
+  Reset(SaveFile);
+  Readln(SaveFile, len);
+  SetLength(players, len);
+  for i := 0 to len - 1 do
+  begin
+    Readln(SaveFile, players[i].letters);
+    Readln(SaveFile, players[i].lastLetter);
+    Readln(SaveFile, players[i].points);
+    Readln(SaveFile, str);
+    players[i].friendHelp := StrToBool(str);
+    Readln(SaveFile, str);
+    players[i].fi_fi := StrToBool(str);
+  end;
+  Readln(SaveFile, currentPlayer);
+  Readln(SaveFile, bank);
+  CloseFile(SaveFile);
 end;
 
 procedure SaveGame(players: TPlayers; bank: string; currentPlayer: Integer;
