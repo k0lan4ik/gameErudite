@@ -350,6 +350,16 @@ begin
   writeln('правила');
 end;
 
+procedure DeleteLettersInPlayer(var letters, word:string);
+var
+  temp:integer;
+begin
+  for temp := 1 to length(word) do
+  begin
+    delete(letters, pos(word[temp], letters), 1);
+  end;
+end;
+
 procedure PlayerStep(var players: TPlayers; var bank: string;
   var dictionary: TWordDictionary; currentPlayer, prevPlayer: Byte);
 var
