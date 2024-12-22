@@ -104,11 +104,6 @@ begin
   end;
 end;
 
-procedure Game(var players: TPlayers; var bank, dictionary: string);
-begin
-
-end;
-
 procedure Setout(letters: string);
 var
   temp: Integer;
@@ -332,6 +327,11 @@ begin
   result := skip;
 end;
 
+procedure gamerule;
+begin
+  writeln('правила');
+end;
+
 procedure PlayerStep(var players: TPlayers; var bank: string;
   var dictionary: TWordDictionary; currentPlayer, prevPlayer: Byte);
 var
@@ -420,6 +420,41 @@ begin
     Writeln('Вы неправильно ввели слово');
   end;
   Writeln('Ваши очки: ', players[currentPlayer].points);
+
+end;
+
+procedure Game(var players: TPlayers; var bank: string;var dictionary:TWordDictionary;var currentplayer:integer);
+var
+  prevplayer, temp, maxpoints:integer;
+begin
+  if currentplayer = Low(players) then
+    prevplayer := High(players)
+  else
+    prevplayer :=currentplayer - 1;
+  while not IsAllSkip(players) do
+  begin
+    PlayerStep(players, bank, dictionary, currentplayer, prevplayer);
+    if currentplayer = High(players) then
+      currentplayer:=Low(players)
+    else
+      Inc(currentplayer);
+    if prevplayer = High(players) then
+      prevplayer:=Low(players)
+    else
+      Inc(prevplayer);
+  end;
+
+  maxpoints:=players[low(players)].points;
+  for temp := Low(players) to High(players) do
+  begin
+    if players[temp].points > maxpoints then
+      maxpoints:=players[temp].points;
+  end;
+  for temp := Low(players) to High(players) do
+  begin
+    if players[temp].points = maxpoints then
+      writeln('Победил игрок ', temp+1, ' набрав ', maxpoints);
+  end;
 end;
 
 procedure SaveGame(players: TPlayers; bank: string; currentPlayer: Integer;
@@ -515,16 +550,6 @@ begin
     ReadPlayers(players, bank);
   end;
   ReadWordDictionary(dictionary);
-  PlayerStep(players, bank, dictionary, currentPlayer, High(players));
-  SaveGame(players, bank, currentPlayer, SaveName);
-  PlayerStep(players, bank, dictionary, currentPlayer, High(players));
-  SaveGame(players, bank, currentPlayer, SaveName);
-  PlayerStep(players, bank, dictionary, currentPlayer, High(players));
-  SaveGame(players, bank, currentPlayer, SaveName);
-  PlayerStep(players, bank, dictionary, currentPlayer, High(players));
-  SaveGame(players, bank, currentPlayer, SaveName);
-  // FiftyFifty(players[0], bank);
-  DeleteFile(DEFAULT_DIR_SAVE + '\' + SaveName);
-  Readln
-
+  ReadPlayers(players, bank);
+  Readln;
 end.
