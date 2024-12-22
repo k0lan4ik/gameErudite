@@ -1,0 +1,575 @@
+﻿program main;
+
+{$APPTYPE CONSOLE}
+{$R *.res}
+
+uses
+  System.SysUtils;
+
+const
+  MIN_COUNT_PLAYERS = 2;
+  MAX_COUNT_PLAYERS = 10;
+  DEFAULT_PATH_DIC = 'words.txt';
+  DEFAULT_DIR_SAVE = 'Saves';
+  DEFAULT_FORM_SAVE = '.bup';
+
+type
+  TPlayer = record
+    letters: string[10];
+    lastLetter: char;
+    points: Integer;
+    friendHelp: Boolean;
+    fi_fi: Boolean;
+  end;
+
+  TPlayers = array of TPlayer;
+  TWordDictionary = array of string;
+  TCountLetters = 1 .. 10;
+
+procedure CreateBankLetters(var bank: string);
+var
+  i, j, k: Integer;
+  tempchar: char;
+begin
+  randomize;
+  bank := 'ааааааааббббввввггггддддеееееееежжжжззззииииииииййййккккллллммммннннооооооооппппррррссссттттууууууууффффххххццццччччшшшшщщщщъъъъыыыыыыыыььььээээээээююююююююяяяяяяяя';
+  for i := 1 to length(bank) * 2 do
+  begin
+    j := random(length(bank)) + 1;
+    k := random(length(bank)) + 1;
+    tempchar := bank[k];
+    bank[k] := bank[j];
+    bank[j] := tempchar;
+  end;
+end;
+
+procedure ReadWordDictionary(var dictionary: TWordDictionary);
+var
+  wordFile: TextFile;
+  word: string;
+  isWord: Boolean;
+  i: Integer;
+begin
+  AssignFile(wordFile, DEFAULT_PATH_DIC);
+  try
+    Reset(wordFile);
+    Readln(wordFile, word);
+    SetLength(dictionary, StrToInt(word) + 1);
+    for i := Low(dictionary) to High(dictionary) do
+    begin
+      dictionary[i] := word;
+      Readln(wordFile, word);
+    end;
+    CloseFile(wordFile);
+  except
+    Writeln('файл словаря не найден');
+  end;
+
+end;
+
+function CutLetters(var bank: string; count: TCountLetters): string;
+var
+  tempstring: string;
+begin
+  tempstring := copy(bank, 1, count);
+  delete(bank, 1, count);
+  result := tempstring;
+end;
+
+procedure ReadPlayers(var players: TPlayers; var bank: string);
+var
+  n: Integer;
+  correct: Boolean;
+begin
+  correct := True;
+  while correct do
+  begin
+    Readln(n);
+    if (MIN_COUNT_PLAYERS <= n) and (n <= MAX_COUNT_PLAYERS) then
+    begin
+      correct := False;
+    end
+    else
+    begin
+      Writeln('Недопустимое число игроков, введите другое число: ');
+    end;
+  end;
+  SetLength(players, n);
+  for var i := 0 to n - 1 do
+  begin
+    players[i].letters := CutLetters(bank, 10);
+    players[i].points := 0;
+    players[i].fi_fi := True;
+    players[i].friendHelp := True;
+  end;
+end;
+
+procedure Setout(letters: string);
+var
+  temp: Integer;
+begin
+  for temp := Low(letters) to High(letters) do
+    write(letters[temp], ' ');
+  Writeln;
+end;
+
+function CheckLettersInPlayer(var word: String; letters: string): Boolean;
+var ThereIs: Boolean;
+    NumOfLetters: Integer;
+    NumOfChar: Integer;
+begin
+  NumOfLetters := 1;
+  ThereIs := True;
+  while ThereIs and (NumOfLetters <= length(word)) do
+  begin
+    NumOfChar := pos(word[NumOfLetters], letters);
+    if NumOfChar <> 0 then
+    begin
+      NumOfLetters := NumOfLetters + 1;
+      delete(letters, NumOfChar, 1);
+    end
+    else
+    begin
+      ThereIs := False;
+    end;
+  end;
+  Result := ThereIs;
+end;
+
+procedure AddToDictionary(var dictionary: TWordDictionary; word: string;
+  index: Integer);
+var
+  value, cod, i: Integer;
+  f: TextFile;
+begin
+  Insert(word, dictionary, index);
+  dictionary[Index] := word;
+  dictionary[0] := IntToStr(StrToInt(dictionary[0]) + 1);
+  AssignFile(f, DEFAULT_PATH_DIC);
+  Rewrite(f);
+  for i := Low(dictionary) to High(dictionary) do
+    Writeln(f, dictionary[i]);
+  CloseFile(f);
+end;
+
+function CheckWordInDictionary(word: string; var dictionary: TWordDictionary;
+  var index: Integer): Boolean;
+(* var AddNewWord: Boolean;
+  Choise: Char; *)
+var
+  left, right, mid: Integer;
+begin
+  result := False;
+  left := 1;
+  right := StrToInt(dictionary[0]);
+  while (left <= right) do
+  begin
+    mid := (left + right) div 2;
+    if word = dictionary[mid] then
+    begin
+      result := True;
+      left := right + 1;
+    end
+    else if word > dictionary[mid] then
+    begin
+      left := mid + 1;
+      index := left;
+    end
+    else
+    begin
+      right := mid - 1;
+      index := mid;
+    end;
+  end;
+  if not result then
+  begin
+    result := False;
+  end;
+end;
+// AddNewWord := False;
+(* else
+  begin
+  writeln('������� ����� ��� � �������, ������ ��� ��������? �/� ');
+  ReadLn(Choise);
+  if Choise = '�' then
+  begin
+  //AddToDictionary
+  (dictionary);  ���� �������� ������� ������� ����� ��������
+  end;
+  end; *)
+
+function IsAllAgreement(playersCount: Byte): Boolean;
+begin
+
+end;
+
+procedure FiftyFifty(var player: TPlayer; var bank: string);
+var
+  change5: string;
+  temp_letters: string[10];
+  correct_input: Boolean;
+  i, f, count_letters: Integer;
+begin
+  correct_input := False;
+  while not correct_input do
+  begin
+    i := 1;
+    f := 1;
+    count_letters := 0;
+    temp_letters := player.letters;
+    Writeln('Ваш набор букв: ', player.letters);
+    write('Введите буквы для обмена: ');
+    Readln(change5);
+    correct_input := True;
+    { if length(change5) <> 5 then
+      begin
+      correct_input := False;
+      writeln('Вы ввели неверное количество букв.');
+      end; }
+    for var l := 1 to length(change5) do
+    begin
+      if change5[l] <> ' ' then
+        count_letters := count_letters + 1;
+    end;
+    if count_letters <> 5 then
+    begin
+      correct_input := False;
+      Writeln('Вы ввели неверное количество букв.');
+    end;
+    while (i < 6) and (correct_input) do
+    begin
+      if change5[f] <> ' ' then
+      begin
+        if pos(change5[f], temp_letters) = 0 then
+        begin
+          correct_input := False;
+          Writeln('Неверный ввод. Не все введенные вами буквы имеются в вашем наборе.');
+        end
+        else
+        begin
+          delete(temp_letters, pos(change5[f], temp_letters, 1), 1);
+        end;
+        i := i + 1;
+      end;
+      f := f + 1;
+    end;
+  end;
+
+  for var k := 1 to 5 do
+  begin
+    player.letters := temp_letters;
+  end;
+  player.letters := player.letters + CutLetters(bank, 5);
+end;
+
+procedure friendHelp(var players: TPlayers; currentPlayer: Byte);
+var
+  temp, indexgivenchar, indextakenchar, correctvalue: Integer;
+  givenchar, takenchar, tempchar: ansichar;
+  tempstring: string;
+  uncorrect: Boolean;
+begin
+  write('Ваш набор букв: ');
+  Setout(players[currentPlayer].letters);
+  temp := 0;
+  while temp < length(players) do
+  begin
+    if temp <> currentPlayer then
+    begin
+      write('Набор игрока ', temp + 1, ': ');
+      Setout(players[temp].letters);
+    end;
+    Inc(temp);
+  end;
+  uncorrect := True;
+  while uncorrect do
+  begin
+    Writeln('Выберите букву которую вы хотите поменять');
+    Readln(givenchar);
+    indexgivenchar := pos(givenchar, players[currentPlayer].letters);
+    if indexgivenchar <> 0 then
+      uncorrect := False
+    else
+      Writeln('У вас нет такой буквы');
+  end;
+  uncorrect := True;
+  while uncorrect do
+  begin
+    correctvalue := 1;
+    while correctvalue <> 0 do
+    begin
+      Writeln('Введите номер игрока с которым хотите поменяться');
+      Readln(tempstring);
+      temp := length(tempstring);
+      while tempstring[temp] = ' ' do
+        Dec(temp);
+      delete(tempstring, temp + 1, length(tempstring) - temp);
+      Val(tempstring, temp, correctvalue);
+    end;
+    Dec(temp);
+    if temp = currentPlayer then
+      Writeln('Вы не можете поменяться с собой')
+    else if (temp < 0) or (temp > length(players) - 1) then
+      Writeln('Такого игрока не существует')
+    else
+      uncorrect := False;
+  end;
+  uncorrect := True;
+  while uncorrect do
+  begin
+    Writeln('Выберете букву которую хотите взять у игрока ', temp + 1);
+    Readln(takenchar);
+    indextakenchar := pos(takenchar, players[temp].letters);
+    if indextakenchar <> 0 then
+      uncorrect := False
+    else
+      Writeln('У него нет такой буквы');
+  end;
+  players[currentPlayer].letters[indexgivenchar] := takenchar;
+  players[temp].letters[indextakenchar] := givenchar;
+end;
+
+function IsAllSkip(players: TPlayers): Boolean;
+var
+  temp: Integer;
+  skip: Boolean;
+begin
+  temp := low(players);
+  skip := True;
+  while skip and (temp <= high(players)) do
+  begin
+    if players[temp].lastLetter <> ' ' then
+      skip := False;
+    Inc(temp);
+  end;
+  result := skip;
+end;
+
+procedure gamerule;
+begin
+  writeln('правила');
+end;
+
+procedure PlayerStep(var players: TPlayers; var bank: string;
+  var dictionary: TWordDictionary; currentPlayer, prevPlayer: Byte);
+var
+  isRight, isWord: Boolean;
+  word, agree: string;
+  index: Integer;
+begin
+  Writeln('Ход игрока ', currentPlayer + 1);
+
+  isWord := False;
+  while not isWord do
+  begin
+    Write('Набор букв игрока: ');
+    Setout(players[currentPlayer].letters);
+
+    if players[currentPlayer].fi_fi or players[currentPlayer].friendHelp then
+    begin
+      Write('У вас остались бонусы:');
+      if players[currentPlayer].fi_fi then
+        Write('"50-на-50" ');
+      if players[currentPlayer].friendHelp then
+        Write('"помощь друга"');
+      Writeln;
+    end
+    else
+      Write('У вас не осталось подсказок');
+
+    Write('Введите слово или название подсказки в кавычках: ');
+    Readln(word);
+    word := Trim(word);
+    if (word = '"50-на-50"') and players[currentPlayer].fi_fi then
+    begin
+      FiftyFifty(players[currentPlayer], bank);
+      players[currentPlayer].fi_fi := False;
+    end
+    else if (word = '"помощь друга"') and players[currentPlayer].friendHelp then
+    begin
+      friendHelp(players, currentPlayer);
+      players[currentPlayer].friendHelp := False;
+    end
+    else
+      isWord := True;
+  end;
+  if word = '' then
+    players[currentPlayer].lastLetter := ' '
+  else if CheckWordInDictionary(word, dictionary, index) then
+  begin
+    isRight := CheckLettersInPlayer(word, players[currentPlayer].letters)
+  end
+  else
+  begin
+    Writeln('Такого слова нет, хотите добавить в словарь?(да, нет):');
+    Readln(agree);
+    if agree = 'да' then
+    begin
+      if IsAllAgreement(length(players)) then
+      begin
+        AddToDictionary(dictionary, word, index);
+        isRight := CheckLettersInPlayer(word, players[currentPlayer].letters)
+      end
+      else
+      begin
+        isRight := False;
+      end;
+    end
+    else
+    begin
+      isRight := False;
+    end;
+
+  end;
+  if isRight then
+  begin
+    Writeln('Вы правильно ввели слово');
+    players[currentPlayer].lastLetter := word[High(word)];
+    if word[Low(word)] = players[prevPlayer].lastLetter then
+      Inc(players[currentPlayer].points, length(word) * 2)
+    else
+      Inc(players[currentPlayer].points, length(word));
+    players[currentPlayer].letters := players[currentPlayer].letters +
+      CutLetters(bank, length(word));
+  end
+  else
+  begin
+    Dec(players[currentPlayer].points, length(word));
+    Writeln('Вы неправильно ввели слово');
+  end;
+  Writeln('Ваши очки: ', players[currentPlayer].points);
+
+end;
+
+procedure SaveGame(players: TPlayers; bank: string; currentPlayer: Integer;
+  SaveName: string);
+var
+  SaveFile: TextFile;
+  i: Integer;
+begin
+  AssignFile(SaveFile, DEFAULT_DIR_SAVE + '\' + SaveName + DEFAULT_FORM_SAVE);
+  Rewrite(SaveFile);
+  Writeln(SaveFile, length(players));
+  for i := Low(players) to High(players) do
+  begin
+    Writeln(SaveFile, players[i].letters);
+    Writeln(SaveFile, players[i].lastLetter);
+    Writeln(SaveFile, players[i].points);
+    Writeln(SaveFile, players[i].friendHelp);
+    Writeln(SaveFile, players[i].fi_fi);
+  end;
+  Writeln(SaveFile, currentPlayer);
+  Writeln(SaveFile, bank);
+  CloseFile(SaveFile);
+end;
+
+procedure Game(var players: TPlayers; var bank, SaveName: string; var dictionary:TWordDictionary;var currentplayer:integer);
+var
+  prevplayer, temp, maxpoints:integer;
+begin
+  if currentplayer = Low(players) then
+    prevplayer := High(players)
+  else
+    prevplayer :=currentplayer - 1;
+  while not IsAllSkip(players) do
+  begin
+    PlayerStep(players, bank, dictionary, currentplayer, prevplayer);
+    SaveGame(players, bank, currentPlayer, SaveName);
+    if currentplayer = High(players) then
+      currentplayer:=Low(players)
+    else
+      Inc(currentplayer);
+    if prevplayer = High(players) then
+      prevplayer:=Low(players)
+    else
+      Inc(prevplayer);
+  end;
+
+  maxpoints:=players[low(players)].points;
+  for temp := Low(players) to High(players) do
+  begin
+    if players[temp].points > maxpoints then
+      maxpoints:=players[temp].points;
+  end;
+  for temp := Low(players) to High(players) do
+  begin
+    if players[temp].points = maxpoints then
+      writeln('Победил игрок ', temp+1, ' набрав ', maxpoints);
+  end;
+end;
+
+procedure ReadSave(var players: TPlayers; var bank:string; var currentPlayer: Integer;
+  SaveName: string);
+var
+  SaveFile: TextFile;
+  i, len: Integer;
+  str: string;
+begin
+  AssignFile(SaveFile, DEFAULT_DIR_SAVE + '\' + SaveName + DEFAULT_FORM_SAVE);
+  Reset(SaveFile);
+  Readln(SaveFile, len);
+  SetLength(players, len);
+  for i := 0 to len - 1 do
+  begin
+    Readln(SaveFile, players[i].letters);
+    Readln(SaveFile, players[i].lastLetter);
+    Readln(SaveFile, players[i].points);
+    Readln(SaveFile, str);
+    players[i].friendHelp := StrToBool(str);
+    Readln(SaveFile, str);
+    players[i].fi_fi := StrToBool(str);
+  end;
+  Readln(SaveFile, currentPlayer);
+  Readln(SaveFile, bank);
+  CloseFile(SaveFile);
+end;
+
+var
+  bank: string;
+  dictionary: TWordDictionary;
+  players: TPlayers;
+  word, SaveName, SaveNames: string;
+  i, currentPlayer: Integer;
+  sr: TSearchRec;
+
+begin
+  if not CreateDir(DEFAULT_DIR_SAVE) and (FindFirst(DEFAULT_DIR_SAVE + '\*' + DEFAULT_FORM_SAVE, faAnyFile, sr) = 0)
+  then
+  begin
+    Writeln('Загрузить сохранение? (да\нет)');
+    Readln(word);
+    if Trim(word) = 'да' then
+    begin
+      Writeln('Выберите сохранение: ');
+      begin
+        i := 1;
+        repeat
+          SaveNames := SaveNames + IntToStr(i) + ':' + sr.Name;
+          Writeln(i, ': ', sr.Name);
+          Inc(i)
+        until FindNext(sr) <> 0;
+      end;
+      FindClose(sr);
+      Readln(i);
+      if pos(IntToStr(i) + ':', SaveNames) <> 0 then
+      begin
+        SaveName := copy(SaveNames, pos(IntToStr(i) + ':', SaveNames) + 2, 17);
+        ReadSave(players, bank, currentPlayer, SaveName);
+      end
+      else
+        Writeln('// что-то не так');
+
+    end;
+  end;
+  if Trim(word) <> 'да' then
+  begin
+    currentPlayer := 0;
+    SaveName := FormatDateTime('dd_mm_yyyy_hhmmss', Now);
+    CreateBankLetters(bank);
+    ReadPlayers(players, bank);
+  end;
+  ReadWordDictionary(dictionary);
+  Game(players,bank,SaveName,dictionary,currentPlayer);
+  DeleteFile(DEFAULT_DIR_SAVE + '\' + SaveName + DEFAULT_FORM_SAVE);
+  Readln;
+end.
