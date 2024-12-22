@@ -1,4 +1,4 @@
-program main;
+﻿program main;
 
 {$APPTYPE CONSOLE}
 {$R *.res}
@@ -325,39 +325,6 @@ begin
   result := skip;
 end;
 
-
-procedure Game(var players: TPlayers; var bank, dictionary: string);
-var
-  prevplayer, currentplayer, temp, maxpoints:integer;
-begin
-  currentplayer:=Low(players);
-  prevplayer:=High(players);
-  while not IsAllSkip(players) do
-  begin
-    PlayerStep(players, bank, dictionary, currentplayer, prevplayer);
-    if currentplayer = High(players) then
-      currentplayer:=Low(players)
-    else
-      Inc(currentplayer);
-    if prevplayer = High(players) then
-      prevplayer:=Low(players)
-    else
-      Inc(prevplayer);
-  end;
-
-  maxpoints:=players[low(players)].points;
-  for temp := Low(players) to High(players) do
-  begin
-    if players[temp].points > maxpoints then
-      maxpoints:=players[temp].points;
-  end;
-  for temp := Low(players) to High(players) do
-  begin
-    if players[temp].points = maxpoints then
-      writeln('Победил игрок ', temp+1, ' набрав ', maxpoints);
-  end;
-end;
-
 procedure gamerule;
 begin
   writeln('правила');
@@ -453,6 +420,39 @@ begin
 
 end;
 
+procedure Game(var players: TPlayers; var bank: string;var dictionary:TWordDictionary);
+var
+  prevplayer, currentplayer, temp, maxpoints:integer;
+begin
+  currentplayer:=Low(players);
+  prevplayer:=High(players);
+  while not IsAllSkip(players) do
+  begin
+    PlayerStep(players, bank, dictionary, currentplayer, prevplayer);
+    if currentplayer = High(players) then
+      currentplayer:=Low(players)
+    else
+      Inc(currentplayer);
+    if prevplayer = High(players) then
+      prevplayer:=Low(players)
+    else
+      Inc(prevplayer);
+  end;
+
+  maxpoints:=players[low(players)].points;
+  for temp := Low(players) to High(players) do
+  begin
+    if players[temp].points > maxpoints then
+      maxpoints:=players[temp].points;
+  end;
+  for temp := Low(players) to High(players) do
+  begin
+    if players[temp].points = maxpoints then
+      writeln('Победил игрок ', temp+1, ' набрав ', maxpoints);
+  end;
+end;
+
+
 var
   bank: string;
   dictionary: TWordDictionary;
@@ -461,13 +461,6 @@ var
 begin
   CreateBankLetters(bank);
   ReadWordDictionary(dictionary);
-  // ReadPlayers(players, bank);
-  // Readln;
-  While True do
-  begin
-    Readln(word);
-    if CheckWordInDictionary(word, dictionary) then
-      Writeln('Слово есть');
-  end;
+  ReadPlayers(players, bank);
   Readln;
 end.
