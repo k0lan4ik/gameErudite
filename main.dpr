@@ -9,7 +9,8 @@ uses
 const
   MIN_COUNT_PLAYERS = 2;
   MAX_COUNT_PLAYERS = 10;
-  DEFAULT_PATH = 'words.txt';
+  DEFAULT_PATH_DIC = 'words.txt';
+  DEFAULT_PATH_RULE = 'rule.txt';
   DEFAULT_DIR_SAVE = 'Saves';
   DEFAULT_FORM_SAVE = '.bup';
 
@@ -50,7 +51,7 @@ var
   isWord: Boolean;
   i: Integer;
 begin
-  AssignFile(wordFile, DEFAULT_PATH);
+  AssignFile(wordFile, DEFAULT_PATH_DIC);
   try
     Reset(wordFile);
     Readln(wordFile, word);
@@ -145,7 +146,7 @@ begin
   Insert(word, dictionary, index);
   dictionary[Index] := word;
   dictionary[0] := IntToStr(StrToInt(dictionary[0]) + 1);
-  AssignFile(f, DEFAULT_PATH);
+  AssignFile(f, DEFAULT_PATH_DIC);
   Rewrite(f);
   for i := Low(dictionary) to High(dictionary) do
     Writeln(f, dictionary[i]);
@@ -345,9 +346,14 @@ begin
   result := skip;
 end;
 
-procedure gamerule;
+procedure Gamerule;
+var RuleFile: TextFile;
+    rule: string;
 begin
-  writeln('правила');
+  AssignFile(RuleFile, DEFAULT_PATH_RULE);
+  Reset(RuleFile);
+  Readln(RuleFile,rule);
+  Writeln(rule);
 end;
 
 procedure PlayerStep(var players: TPlayers; var bank: string;
@@ -524,54 +530,6 @@ begin
   CloseFile(SaveFile);
 end;
 
-procedure SaveGame(players: TPlayers; bank: string; currentPlayer: Integer;
-  SaveName: string);
-var
-  SaveFile: TextFile;
-  i: Integer;
-begin
-  AssignFile(SaveFile, DEFAULT_DIR_SAVE + '\' + SaveName + DEFAULT_FORM_SAVE);
-  Rewrite(SaveFile);
-  Writeln(SaveFile, length(players));
-  for i := Low(players) to High(players) do
-  begin
-    Writeln(SaveFile, players[i].letters);
-    Writeln(SaveFile, players[i].lastLetter);
-    Writeln(SaveFile, players[i].points);
-    Writeln(SaveFile, players[i].friendHelp);
-    Writeln(SaveFile, players[i].fi_fi);
-  end;
-  Writeln(SaveFile, currentPlayer);
-  Writeln(SaveFile, bank);
-  CloseFile(SaveFile);
-end;
-
-procedure ReadSave(var players: TPlayers; var bank:string; var currentPlayer: Integer;
-  SaveName: string);
-var
-  SaveFile: TextFile;
-  i, len: Integer;
-  str: string;
-begin
-  AssignFile(SaveFile, DEFAULT_DIR_SAVE + '\' + SaveName + DEFAULT_FORM_SAVE);
-  Reset(SaveFile);
-  Readln(SaveFile, len);
-  SetLength(players, len);
-  for i := 0 to len - 1 do
-  begin
-    Readln(SaveFile, players[i].letters);
-    Readln(SaveFile, players[i].lastLetter);
-    Readln(SaveFile, players[i].points);
-    Readln(SaveFile, str);
-    players[i].friendHelp := StrToBool(str);
-    Readln(SaveFile, str);
-    players[i].fi_fi := StrToBool(str);
-  end;
-  Readln(SaveFile, currentPlayer);
-  Readln(SaveFile, bank);
-  CloseFile(SaveFile);
-end;
-
 var
   bank: string;
   dictionary: TWordDictionary;
@@ -613,6 +571,7 @@ begin
   begin
     currentPlayer := 0;
     SaveName := FormatDateTime('dd_mm_yyyy_hhmmss', Now);
+    Gamerule;
     CreateBankLetters(bank);
     ReadPlayers(players, bank);
   end;
