@@ -78,13 +78,17 @@ end;
 
 procedure ReadPlayers(var players: TPlayers; var bank: string);
 var
+  s:string;
   n: Integer;
   correct: Boolean;
 begin
   correct := True;
   while correct do
   begin
-    Readln(n);
+    repeat
+      writeln('Введите количество игроков (от 2 до 10)');
+      Readln(s);
+    until TryStrToInt(s,n);
     if (MIN_COUNT_PLAYERS <= n) and (n <= MAX_COUNT_PLAYERS) then
     begin
       correct := False;
@@ -198,9 +202,46 @@ end;
   end;
   end; *)
 
-function IsAllAgreement(playersCount: Byte): Boolean;
+function YesNo (s:string):boolean;
+var
+  temps:string;
+  uncorrect:boolean;
 begin
+  uncorrect := true;
+  while uncorrect do
+  begin
+    write(s);
+    readln(temps);
+    temps:=trim(temps);
+    if (temps = 'да') then
+    begin
+      uncorrect:=false;
+      result:=true;
+    end;
+    if (temps = 'нет') then
+    begin
+      uncorrect:=false;
+      result:=false;
+    end;
+  end;
+end;
 
+function IsAllAgreement(playersCount, currentplayer: Byte): Boolean;
+var
+  temp, amountyes:integer;
+begin
+  amountyes:=0;
+  for temp := 1 to playerscount do
+  begin
+    if temp <> currentplayer+1 then
+    begin
+      writeln('Игрок ', temp);
+      if YesNo('согласны ли вы добавить слово в словарь? ') then
+        inc(amountyes);
+    end;
+  end;
+  inc(amountyes);
+  result:= (amountyes/playerscount) > 0.5;
 end;
 
 procedure FiftyFifty(var player: TPlayer; var bank: string);
@@ -345,7 +386,7 @@ begin
   result := skip;
 end;
 
-procedure gamerule;
+procedure Gamerule;
 begin
   writeln('правила');
 end;
@@ -415,7 +456,7 @@ begin
     Readln(agree);
     if agree = 'да' then
     begin
-      if IsAllAgreement(length(players)) then
+      if IsAllAgreement(length(players), currentplayer) then
       begin
         AddToDictionary(dictionary, word, index);
         isRight := CheckLettersInPlayer(word, players[currentPlayer].letters)
