@@ -113,9 +113,27 @@ begin
   Writeln;
 end;
 
-function CheckLettersInPlayer(word, letters: string): Boolean;
+function CheckLettersInPlayer(var word: String; letters: string): Boolean;
+var ThereIs: Boolean;
+    NumOfLetters: Integer;
+    NumOfChar: Integer;
 begin
-  result := True;
+  NumOfLetters := 1;
+  ThereIs := True;
+  while ThereIs and (NumOfLetters <= length(word)) do
+  begin
+    NumOfChar := pos(word[NumOfLetters], letters);
+    if NumOfChar <> 0 then
+    begin
+      NumOfLetters := NumOfLetters + 1;
+      delete(letters, NumOfChar, 1);
+    end
+    else
+    begin
+      ThereIs := False;
+    end;
+  end;
+  Result := ThereIs;
 end;
 
 procedure AddToDictionary(var dictionary: TWordDictionary; word: string;
