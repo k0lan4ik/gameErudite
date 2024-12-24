@@ -148,7 +148,6 @@ var
   f: TextFile;
 begin
   Insert(word, dictionary, index);
-  dictionary[Index] := word;
   dictionary[0] := IntToStr(StrToInt(dictionary[0]) + 1);
   AssignFile(f, DEFAULT_PATH_DIC);
   Rewrite(f);
@@ -432,7 +431,7 @@ begin
       Writeln;
     end
     else
-      Write('У вас не осталось подсказок');
+      Writeln('У вас не осталось подсказок');
 
     Write('Введите слово или название подсказки в кавычках: ');
     Readln(word);
@@ -584,15 +583,15 @@ var
   bank: string;
   dictionary: TWordDictionary;
   players: TPlayers;
-  word, SaveName, SaveNames: string;
+  word, SaveName, SaveNames, tempstring: string;
   i, currentPlayer: Integer;
   sr: TSearchRec;
+  uncorrect:boolean;
 
 begin
   if not CreateDir(DEFAULT_DIR_SAVE) and (FindFirst(DEFAULT_DIR_SAVE + '\*' + DEFAULT_FORM_SAVE, faAnyFile, sr) = 0)
   then
   begin
-
     if YesNo('Загрузить сохранение? (да\нет) ') then
     begin
       Writeln('Выберите сохранение: ');
@@ -605,18 +604,29 @@ begin
         until FindNext(sr) <> 0;
       end;
       FindClose(sr);
-      Readln(i);
-      if pos(IntToStr(i) + ':', SaveNames) <> 0 then
+      uncorrect:=true;
+      while uncorrect do
       begin
-        SaveName := copy(SaveNames, pos(IntToStr(i) + ':', SaveNames) + 2, 17);
-        ReadSave(players, bank, currentPlayer, SaveName);
-      end
-      else
-        Writeln('// что-то не так');
+        Readln(tempstring);
+        while not trystrtoint(tempstring, i) do
+        begin
+          Writeln('// что-то не так');
+          Readln(tempstring);
+        end;
+        if pos(IntToStr(i) + ':', SaveNames) <> 0 then
+        begin
+          SaveName := copy(SaveNames, pos(IntToStr(i) + ':', SaveNames) + 2, 17);
+          ReadSave(players, bank, currentPlayer, SaveName);
+          uncorrect:=false;
+        end
+        else
+          Writeln('// что-то не так');
+      end;
     end
     else
       i := 0;
   end;
+
   if i = 0 then
   begin
     currentPlayer := 0;
