@@ -295,12 +295,8 @@ begin
       f := f + 1;
     end;
   end;
-
-  for var k := 1 to 5 do
-  begin
-    player.letters := temp_letters;
-  end;
-  player.letters := player.letters + CutLetters(bank, 5);
+  player.letters := temp_letters + CutLetters(bank, 5);
+  dec(player.points, 2);
 end;
 
 procedure friendHelp(var players: TPlayers; currentPlayer: Byte);
