@@ -356,8 +356,6 @@ object Form2: TForm2
     Align = alClient
     TabOrder = 1
     Visible = False
-    ExplicitWidth = 716
-    ExplicitHeight = 507
     DesignSize = (
       718
       515)
@@ -389,7 +387,6 @@ object Form2: TForm2
       ParentFont = False
       TabOrder = 1
       OnClick = FiftyFifty
-      ExplicitLeft = 598
     end
     object Button5: TButton
       Left = 472
@@ -406,7 +403,6 @@ object Form2: TForm2
       ParentFont = False
       TabOrder = 2
       OnClick = FriendHelp
-      ExplicitLeft = 471
     end
     object Panel4: TPanel
       Left = 8
@@ -422,8 +418,6 @@ object Form2: TForm2
       ParentFont = False
       TabOrder = 3
       Visible = False
-      ExplicitWidth = 695
-      ExplicitHeight = 426
       DesignSize = (
         697
         434)
@@ -456,8 +450,6 @@ object Form2: TForm2
         ParentFont = False
         TabOrder = 0
         OnClick = PastFriend
-        ExplicitLeft = 207
-        ExplicitTop = 15
       end
       object Button7: TButton
         Left = 400
@@ -474,8 +466,6 @@ object Form2: TForm2
         ParentFont = False
         TabOrder = 1
         OnClick = NextFriend
-        ExplicitLeft = 399
-        ExplicitTop = 15
       end
       object Button8: TButton
         Left = 246
@@ -487,8 +477,6 @@ object Form2: TForm2
         Enabled = False
         TabOrder = 2
         OnClick = ConfimFriendHelp
-        ExplicitLeft = 245
-        ExplicitTop = 345
       end
     end
     object Panel5: TPanel
@@ -499,8 +487,6 @@ object Form2: TForm2
       Anchors = [akLeft, akTop, akRight, akBottom]
       TabOrder = 4
       Visible = False
-      ExplicitWidth = 695
-      ExplicitHeight = 426
       DesignSize = (
         697
         434)
@@ -534,8 +520,6 @@ object Form2: TForm2
         ParentFont = False
         TabOrder = 0
         OnClick = ConfimFiftyFifty
-        ExplicitLeft = 255
-        ExplicitTop = 345
       end
     end
     object Panel3: TPanel
@@ -545,8 +529,6 @@ object Form2: TForm2
       Height = 434
       Anchors = []
       TabOrder = 0
-      ExplicitLeft = 7
-      ExplicitTop = 59
       DesignSize = (
         697
         434)
@@ -576,8 +558,6 @@ object Form2: TForm2
     Align = alClient
     AutoSize = True
     TabOrder = 0
-    ExplicitWidth = 716
-    ExplicitHeight = 507
     DesignSize = (
       718
       515)
@@ -596,8 +576,6 @@ object Form2: TForm2
       ParentFont = False
       TabOrder = 0
       OnClick = CreateNewGame
-      ExplicitLeft = 215
-      ExplicitTop = 118
     end
     object Button3: TButton
       Left = 216
@@ -614,8 +592,6 @@ object Form2: TForm2
       ParentFont = False
       TabOrder = 1
       OnClick = Rule
-      ExplicitLeft = 215
-      ExplicitTop = 289
     end
     object Button2: TButton
       Left = 216
@@ -635,8 +611,6 @@ object Form2: TForm2
       ShowHint = False
       TabOrder = 2
       OnClick = OpenSave
-      ExplicitLeft = 215
-      ExplicitTop = 206
     end
   end
   object Panel7: TPanel
@@ -648,8 +622,6 @@ object Form2: TForm2
     ParentBackground = False
     TabOrder = 3
     Visible = False
-    ExplicitWidth = 716
-    ExplicitHeight = 507
     DesignSize = (
       718
       515)
@@ -698,8 +670,6 @@ object Form2: TForm2
       ParentFont = False
       TabOrder = 0
       OnClick = AddCountPlayer
-      ExplicitLeft = 431
-      ExplicitTop = 178
     end
     object Button13: TButton
       Left = 198
@@ -717,8 +687,6 @@ object Form2: TForm2
       ParentFont = False
       TabOrder = 1
       OnClick = OddCountPlayer
-      ExplicitLeft = 197
-      ExplicitTop = 178
     end
     object Button14: TButton
       Left = 264
@@ -735,8 +703,6 @@ object Form2: TForm2
       ParentFont = False
       TabOrder = 2
       OnClick = ConfimCountPlayers
-      ExplicitLeft = 263
-      ExplicitTop = 344
     end
   end
   object Panel6: TPanel
@@ -748,8 +714,6 @@ object Form2: TForm2
     ParentBackground = False
     TabOrder = 2
     Visible = False
-    ExplicitWidth = 716
-    ExplicitHeight = 507
     DesignSize = (
       718
       515)
@@ -769,8 +733,6 @@ object Form2: TForm2
       ParentFont = False
       TabOrder = 0
       OnClick = ConfimSave
-      ExplicitLeft = 470
-      ExplicitTop = 414
     end
     object Button11: TButton
       Left = 129
@@ -787,8 +749,6 @@ object Form2: TForm2
       ParentFont = False
       TabOrder = 1
       OnClick = BackFromSave
-      ExplicitLeft = 128
-      ExplicitTop = 414
     end
     object ScrollBox1: TScrollBox
       Left = 152
@@ -800,8 +760,6 @@ object Form2: TForm2
       ParentColor = False
       TabOrder = 2
       UseWheelForScrolling = True
-      ExplicitLeft = 151
-      ExplicitTop = 60
     end
   end
   object MediaPlayer1: TMediaPlayer

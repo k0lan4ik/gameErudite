@@ -634,36 +634,58 @@ end;
 procedure TForm2.FiftyFifty(Sender: TObject);
 begin
   PlaySound(DEFAULT_PATH_BTN_SOUND, 0, SND_FILENAME OR SND_NOSTOP OR SND_ASYNC);
-  Panel5.Visible := True;
-  Panel3.Visible := false;
-  (Sender as TButton).Enabled := false;
-  Button5.Enabled := false;
-  DeleteButtons(LetterButtons);
-  Dec(players[currentPlayer].points, 2);
-  CreateFiftyButtons(players[currentPlayer].letters);
+  if length(bank) > 5 then
+  begin
+    Panel5.Visible := True;
+    Panel3.Visible := false;
+    (Sender as TButton).Enabled := false;
+    Button5.Enabled := false;
+    DeleteButtons(LetterButtons);
+    Dec(players[currentPlayer].points, 2);
+    CreateFiftyButtons(players[currentPlayer].letters);
+  end
+  else
+    MessageDlg('В банке меньше 5 букв', mtInformation, [mbOk], 0);
+
 end;
 
 procedure TForm2.friendHelp(Sender: TObject);
 var
   nextPl: Integer;
+  canUse: Boolean;
 begin
   PlaySound(DEFAULT_PATH_BTN_SOUND, 0, SND_FILENAME OR SND_NOSTOP OR SND_ASYNC);
-  Panel4.Visible := True;
-  Panel3.Visible := false;
-  (Sender as TButton).Enabled := false;
-  Button4.Enabled := false;
-  if currentPlayer = High(players) then
-    friendPlayer := Low(players)
+  canUse := false;
+  nextPl := Low(players);
+  while (nextPl <= High(players)) and not canUse do
+  begin
+    if (length(players[nextPl].letters) > 0) and (nextPl <> currentPlayer) then
+      canUse := True;
+    Inc(nextPl);
+  end;
+  if Length(players[currentPlayer].letters) < 1 then
+    canUse := false;
+  if canUse then
+  begin
+    Panel4.Visible := True;
+    Panel3.Visible := false;
+    (Sender as TButton).Enabled := false;
+    Button4.Enabled := false;
+    if currentPlayer = High(players) then
+      friendPlayer := Low(players)
+    else
+      friendPlayer := currentPlayer + 1;
+    DeleteButtons(LetterButtons);
+    CreateFirendButtons(players[currentPlayer].letters,
+      players[friendPlayer].letters, false);
+    if currentPlayer = High(players) then
+      nextPl := Low(players)
+    else
+      nextPl := currentPlayer + 1;
+    Label2.Caption := 'Игрок ' + IntToStr(nextPl + 1);
+  end
   else
-    friendPlayer := currentPlayer + 1;
-  DeleteButtons(LetterButtons);
-  CreateFirendButtons(players[currentPlayer].letters,
-    players[friendPlayer].letters, false);
-  if currentPlayer = High(players) then
-    nextPl := Low(players)
-  else
-    nextPl := currentPlayer + 1;
-  Label2.Caption := 'Игрок ' + IntToStr(nextPl + 1);
+    MessageDlg('Недостаточно букв у вас / противников', mtInformation, [mbOk], 0);
 end;
 
 procedure TForm2.PastFriend(Sender: TObject);
@@ -818,7 +840,7 @@ var
   Button: TLetterButton;
 begin
   SetLength(Word, 0);
-  SetLength(LetterButtons, 10); // Создаем массив из 10 кнопок
+  SetLength(LetterButtons, Length(players[currentPlayer].letters)); // Создаем массив из 10 кнопок
   for i := 1 to 10 do
   begin
     Button := TLetterButton.Create(Self, i);
@@ -875,8 +897,8 @@ var
   Button: TLetterButton;
 begin
 
-  SetLength(FriendButtons[1], 10); // Создаем массив из 10 кнопок
-  for i := 1 to 10 do
+  SetLength(FriendButtons[1],  Length(players[friendPlayer].letters)); // Создаем массив из 10 кнопок
+  for i := 1 to Length(FriendButtons[1]) do
   begin
     Button := TLetterButton.Create(Self, i + 9);
     Button.Parent := Panel4; // Устанавливаем форму как родителя кнопки
@@ -896,8 +918,8 @@ begin
   end;
   if not onlyFirst then
   begin
-    SetLength(FriendButtons[0], 10);
-    for i := 1 to 10 do
+    SetLength(FriendButtons[0], Length(players[currentPlayer].letters));
+    for i := 1 to Length(FriendButtons[0]) do
     begin
       Button := TLetterButton.Create(Self, i - 1);
       Button.Parent := Panel4; // Устанавливаем форму как родителя кнопки
@@ -947,7 +969,8 @@ var
   Button: TLetterButton;
 begin
 
-  SetLength(LetterButtons, 10); // Создаем массив из 10 кнопок
+  SetLength(LetterButtons, length(players[currentPlayer].letters));
+  // Создаем массив из 10 кнопок
   for i := Low(LetterButtons) to High(LetterButtons) do
   begin
     Button := TLetterButton.Create(Self, i + 1);
