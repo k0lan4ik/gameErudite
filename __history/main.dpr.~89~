@@ -9,8 +9,7 @@ uses
 const
   MIN_COUNT_PLAYERS = 2;
   MAX_COUNT_PLAYERS = 10;
-  DEFAULT_PATH_DIC = 'words.txt';
-  DEFAULT_PATH_RULE = 'rule.txt';
+  DEFAULT_PATH = 'words.txt';
   DEFAULT_DIR_SAVE = 'Saves';
   DEFAULT_FORM_SAVE = '.bup';
 
@@ -51,7 +50,7 @@ var
   isWord: Boolean;
   i: Integer;
 begin
-  AssignFile(wordFile, DEFAULT_PATH_DIC);
+  AssignFile(wordFile, DEFAULT_PATH);
   try
     Reset(wordFile);
     Readln(wordFile, word);
@@ -79,17 +78,13 @@ end;
 
 procedure ReadPlayers(var players: TPlayers; var bank: string);
 var
-  s:string;
   n: Integer;
   correct: Boolean;
 begin
   correct := True;
   while correct do
   begin
-    repeat
-      writeln('Введите количество игроков (от 2 до 10)');
-      Readln(s);
-    until TryStrToInt(s,n);
+    Readln(n);
     if (MIN_COUNT_PLAYERS <= n) and (n <= MAX_COUNT_PLAYERS) then
     begin
       correct := False;
@@ -148,8 +143,9 @@ var
   f: TextFile;
 begin
   Insert(word, dictionary, index);
+  dictionary[Index] := word;
   dictionary[0] := IntToStr(StrToInt(dictionary[0]) + 1);
-  AssignFile(f, DEFAULT_PATH_DIC);
+  AssignFile(f, DEFAULT_PATH);
   Rewrite(f);
   for i := Low(dictionary) to High(dictionary) do
     Writeln(f, dictionary[i]);
@@ -202,46 +198,9 @@ end;
   end;
   end; *)
 
-function YesNo (s:string):boolean;
-var
-  temps:string;
-  uncorrect:boolean;
+function IsAllAgreement(playersCount: Byte): Boolean;
 begin
-  uncorrect := true;
-  while uncorrect do
-  begin
-    write(s);
-    readln(temps);
-    temps:=trim(temps);
-    if (temps = 'да') then
-    begin
-      uncorrect:=false;
-      result:=true;
-    end;
-    if (temps = 'нет') then
-    begin
-      uncorrect:=false;
-      result:=false;
-    end;
-  end;
-end;
 
-function IsAllAgreement(playersCount, currentplayer: Byte): Boolean;
-var
-  temp, amountyes:integer;
-begin
-  amountyes:=0;
-  for temp := 1 to playerscount do
-  begin
-    if temp <> currentplayer+1 then
-    begin
-      writeln('Игрок ', temp);
-      if YesNo('согласны ли вы добавить слово в словарь? ') then
-        inc(amountyes);
-    end;
-  end;
-  inc(amountyes);
-  result:= (amountyes/playerscount) > 0.5;
 end;
 
 procedure FiftyFifty(var player: TPlayer; var bank: string);
@@ -295,8 +254,12 @@ begin
       f := f + 1;
     end;
   end;
-  player.letters := temp_letters + CutLetters(bank, 5);
-  dec(player.points, 2);
+
+  for var k := 1 to 5 do
+  begin
+    player.letters := temp_letters;
+  end;
+  player.letters := player.letters + CutLetters(bank, 5);
 end;
 
 procedure friendHelp(var players: TPlayers; currentPlayer: Byte);
@@ -382,24 +345,9 @@ begin
   result := skip;
 end;
 
-procedure Gamerule;
-var RuleFile: TextFile;
-    rule: string;
+procedure gamerule;
 begin
-  AssignFile(RuleFile, DEFAULT_PATH_RULE);
-  Reset(RuleFile);
-  Readln(RuleFile,rule);
-  Writeln(UTF8ToANSI(rule));
-end;
-
-procedure DeleteLettersInPlayer(var player:TPlayer; word:string);
-var
-  temp:integer;
-begin
-  for temp := 1 to length(word) do
-  begin
-    delete(player.letters, pos(word[temp], player.letters), 1);
-  end;
+  writeln('правила');
 end;
 
 procedure PlayerStep(var players: TPlayers; var bank: string;
@@ -427,7 +375,7 @@ begin
       Writeln;
     end
     else
-      Writeln('У вас не осталось подсказок');
+      Write('У вас не осталось подсказок');
 
     Write('Введите слово или название подсказки в кавычках: ');
     Readln(word);
@@ -453,9 +401,11 @@ begin
   end
   else
   begin
-    if YesNo('Такого слова нет, хотите добавить в словарь?(да, нет) ') then
+    Writeln('Такого слова нет, хотите добавить в словарь?(да, нет):');
+    Readln(agree);
+    if agree = 'да' then
     begin
-      if IsAllAgreement(length(players), currentplayer) then
+      if IsAllAgreement(length(players)) then
       begin
         AddToDictionary(dictionary, word, index);
         isRight := CheckLettersInPlayer(word, players[currentPlayer].letters)
@@ -479,7 +429,6 @@ begin
       Inc(players[currentPlayer].points, length(word) * 2)
     else
       Inc(players[currentPlayer].points, length(word));
-    DeleteLettersInPlayer(players[currentPlayer],word);
     players[currentPlayer].letters := players[currentPlayer].letters +
       CutLetters(bank, length(word));
   end
@@ -524,8 +473,8 @@ begin
     prevplayer :=currentplayer - 1;
   while not IsAllSkip(players) do
   begin
-    SaveGame(players, bank, currentPlayer, SaveName);
     PlayerStep(players, bank, dictionary, currentplayer, prevplayer);
+    SaveGame(players, bank, currentPlayer, SaveName);
     if currentplayer = High(players) then
       currentplayer:=Low(players)
     else
@@ -575,20 +524,69 @@ begin
   CloseFile(SaveFile);
 end;
 
+procedure SaveGame(players: TPlayers; bank: string; currentPlayer: Integer;
+  SaveName: string);
+var
+  SaveFile: TextFile;
+  i: Integer;
+begin
+  AssignFile(SaveFile, DEFAULT_DIR_SAVE + '\' + SaveName + DEFAULT_FORM_SAVE);
+  Rewrite(SaveFile);
+  Writeln(SaveFile, length(players));
+  for i := Low(players) to High(players) do
+  begin
+    Writeln(SaveFile, players[i].letters);
+    Writeln(SaveFile, players[i].lastLetter);
+    Writeln(SaveFile, players[i].points);
+    Writeln(SaveFile, players[i].friendHelp);
+    Writeln(SaveFile, players[i].fi_fi);
+  end;
+  Writeln(SaveFile, currentPlayer);
+  Writeln(SaveFile, bank);
+  CloseFile(SaveFile);
+end;
+
+procedure ReadSave(var players: TPlayers; var bank:string; var currentPlayer: Integer;
+  SaveName: string);
+var
+  SaveFile: TextFile;
+  i, len: Integer;
+  str: string;
+begin
+  AssignFile(SaveFile, DEFAULT_DIR_SAVE + '\' + SaveName + DEFAULT_FORM_SAVE);
+  Reset(SaveFile);
+  Readln(SaveFile, len);
+  SetLength(players, len);
+  for i := 0 to len - 1 do
+  begin
+    Readln(SaveFile, players[i].letters);
+    Readln(SaveFile, players[i].lastLetter);
+    Readln(SaveFile, players[i].points);
+    Readln(SaveFile, str);
+    players[i].friendHelp := StrToBool(str);
+    Readln(SaveFile, str);
+    players[i].fi_fi := StrToBool(str);
+  end;
+  Readln(SaveFile, currentPlayer);
+  Readln(SaveFile, bank);
+  CloseFile(SaveFile);
+end;
+
 var
   bank: string;
   dictionary: TWordDictionary;
   players: TPlayers;
-  word, SaveName, SaveNames, tempstring: string;
+  word, SaveName, SaveNames: string;
   i, currentPlayer: Integer;
   sr: TSearchRec;
-  uncorrect:boolean;
 
 begin
   if not CreateDir(DEFAULT_DIR_SAVE) and (FindFirst(DEFAULT_DIR_SAVE + '\*' + DEFAULT_FORM_SAVE, faAnyFile, sr) = 0)
   then
   begin
-    if YesNo('Загрузить сохранение? (да\нет) ') then
+    Writeln('Загрузить сохранение? (да\нет)');
+    Readln(word);
+    if Trim(word) = 'да' then
     begin
       Writeln('Выберите сохранение: ');
       begin
@@ -600,34 +598,21 @@ begin
         until FindNext(sr) <> 0;
       end;
       FindClose(sr);
-      uncorrect:=true;
-      while uncorrect do
+      Readln(i);
+      if pos(IntToStr(i) + ':', SaveNames) <> 0 then
       begin
-        Readln(tempstring);
-        while not trystrtoint(tempstring, i) do
-        begin
-          Writeln('// что-то не так');
-          Readln(tempstring);
-        end;
-        if pos(IntToStr(i) + ':', SaveNames) <> 0 then
-        begin
-          SaveName := copy(SaveNames, pos(IntToStr(i) + ':', SaveNames) + 2, 17);
-          ReadSave(players, bank, currentPlayer, SaveName);
-          uncorrect:=false;
-        end
-        else
-          Writeln('// что-то не так');
-      end;
-    end
-    else
-      i := 0;
-  end;
+        SaveName := copy(SaveNames, pos(IntToStr(i) + ':', SaveNames) + 2, 17);
+        ReadSave(players, bank, currentPlayer, SaveName);
+      end
+      else
+        Writeln('// что-то не так');
 
-  if i = 0 then
+    end;
+  end;
+  if Trim(word) <> 'да' then
   begin
     currentPlayer := 0;
     SaveName := FormatDateTime('dd_mm_yyyy_hhmmss', Now);
-    Gamerule;
     CreateBankLetters(bank);
     ReadPlayers(players, bank);
   end;

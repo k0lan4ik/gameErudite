@@ -148,6 +148,7 @@ var
   f: TextFile;
 begin
   Insert(word, dictionary, index);
+  dictionary[Index] := word;
   dictionary[0] := IntToStr(StrToInt(dictionary[0]) + 1);
   AssignFile(f, DEFAULT_PATH_DIC);
   Rewrite(f);
@@ -295,8 +296,12 @@ begin
       f := f + 1;
     end;
   end;
-  player.letters := temp_letters + CutLetters(bank, 5);
-  dec(player.points, 2);
+
+  for var k := 1 to 5 do
+  begin
+    player.letters := temp_letters;
+  end;
+  player.letters := player.letters + CutLetters(bank, 5);
 end;
 
 procedure friendHelp(var players: TPlayers; currentPlayer: Byte);
@@ -389,16 +394,16 @@ begin
   AssignFile(RuleFile, DEFAULT_PATH_RULE);
   Reset(RuleFile);
   Readln(RuleFile,rule);
-  Writeln(UTF8ToANSI(rule));
+  Writeln(rule);
 end;
 
-procedure DeleteLettersInPlayer(var player:TPlayer; word:string);
+procedure DeleteLettersInPlayer(var letters, word:string);
 var
   temp:integer;
 begin
   for temp := 1 to length(word) do
   begin
-    delete(player.letters, pos(word[temp], player.letters), 1);
+    delete(letters, pos(word[temp], letters), 1);
   end;
 end;
 
@@ -427,7 +432,7 @@ begin
       Writeln;
     end
     else
-      Writeln('У вас не осталось подсказок');
+      Write('У вас не осталось подсказок');
 
     Write('Введите слово или название подсказки в кавычках: ');
     Readln(word);
@@ -453,7 +458,9 @@ begin
   end
   else
   begin
-    if YesNo('Такого слова нет, хотите добавить в словарь?(да, нет) ') then
+    Writeln('Такого слова нет, хотите добавить в словарь?(да, нет):');
+    Readln(agree);
+    if agree = 'да' then
     begin
       if IsAllAgreement(length(players), currentplayer) then
       begin
@@ -479,7 +486,6 @@ begin
       Inc(players[currentPlayer].points, length(word) * 2)
     else
       Inc(players[currentPlayer].points, length(word));
-    DeleteLettersInPlayer(players[currentPlayer],word);
     players[currentPlayer].letters := players[currentPlayer].letters +
       CutLetters(bank, length(word));
   end
@@ -524,8 +530,8 @@ begin
     prevplayer :=currentplayer - 1;
   while not IsAllSkip(players) do
   begin
-    SaveGame(players, bank, currentPlayer, SaveName);
     PlayerStep(players, bank, dictionary, currentplayer, prevplayer);
+    SaveGame(players, bank, currentPlayer, SaveName);
     if currentplayer = High(players) then
       currentplayer:=Low(players)
     else
@@ -579,16 +585,17 @@ var
   bank: string;
   dictionary: TWordDictionary;
   players: TPlayers;
-  word, SaveName, SaveNames, tempstring: string;
+  word, SaveName, SaveNames: string;
   i, currentPlayer: Integer;
   sr: TSearchRec;
-  uncorrect:boolean;
 
 begin
   if not CreateDir(DEFAULT_DIR_SAVE) and (FindFirst(DEFAULT_DIR_SAVE + '\*' + DEFAULT_FORM_SAVE, faAnyFile, sr) = 0)
   then
   begin
-    if YesNo('Загрузить сохранение? (да\нет) ') then
+    Writeln('Загрузить сохранение? (да\нет)');
+    Readln(word);
+    if Trim(word) = 'да' then
     begin
       Writeln('Выберите сохранение: ');
       begin
@@ -600,30 +607,18 @@ begin
         until FindNext(sr) <> 0;
       end;
       FindClose(sr);
-      uncorrect:=true;
-      while uncorrect do
+      Readln(i);
+      if pos(IntToStr(i) + ':', SaveNames) <> 0 then
       begin
-        Readln(tempstring);
-        while not trystrtoint(tempstring, i) do
-        begin
-          Writeln('// что-то не так');
-          Readln(tempstring);
-        end;
-        if pos(IntToStr(i) + ':', SaveNames) <> 0 then
-        begin
-          SaveName := copy(SaveNames, pos(IntToStr(i) + ':', SaveNames) + 2, 17);
-          ReadSave(players, bank, currentPlayer, SaveName);
-          uncorrect:=false;
-        end
-        else
-          Writeln('// что-то не так');
-      end;
-    end
-    else
-      i := 0;
-  end;
+        SaveName := copy(SaveNames, pos(IntToStr(i) + ':', SaveNames) + 2, 17);
+        ReadSave(players, bank, currentPlayer, SaveName);
+      end
+      else
+        Writeln('// что-то не так');
 
-  if i = 0 then
+    end;
+  end;
+  if Trim(word) <> 'да' then
   begin
     currentPlayer := 0;
     SaveName := FormatDateTime('dd_mm_yyyy_hhmmss', Now);
