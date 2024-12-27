@@ -965,6 +965,11 @@ begin
     Button.Anchors := [];
     Button.IsInWord := false;
 
+    if letters[i + 1] = players[prevPlayer].lastLetter then
+    begin
+      Button.Font.Style := [fsBold];
+    end;
+
     Button.OnClick := OnClickLetter;
     LetterButtons[i] := Button;
   end;
