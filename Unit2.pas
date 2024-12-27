@@ -82,26 +82,26 @@ type
     Button2: TButton;
     ScrollBox1: TScrollBox;
     MediaPlayer1: TMediaPlayer;
-    procedure Button1Click(Sender: TObject);
+    procedure CreateNewGame(Sender: TObject);
     procedure OnClickLetter(Sender: TObject);
     procedure OnClickFifty(Sender: TObject);
     procedure OnClickFriend(Sender: TObject);
     procedure OnClickSave(Sender: TObject);
-    procedure Button16Click(Sender: TObject);
-    procedure Button5Click(Sender: TObject);
-    procedure Button4Click(Sender: TObject);
-    procedure Button8Click(Sender: TObject);
-    procedure Button9Click(Sender: TObject);
-    procedure Button3Click(Sender: TObject);
-    procedure Button11Click(Sender: TObject);
-    procedure Button10Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
-    procedure Button14Click(Sender: TObject);
-    procedure Button12Click(Sender: TObject);
-    procedure Button13Click(Sender: TObject);
+    procedure NextPlayer(Sender: TObject);
+    procedure FriendHelp(Sender: TObject);
+    procedure FiftyFifty(Sender: TObject);
+    procedure ConfimFriendHelp(Sender: TObject);
+    procedure ConfimFiftyFifty(Sender: TObject);
+    procedure Rule(Sender: TObject);
+    procedure BackFromSave(Sender: TObject);
+    procedure ConfimSave(Sender: TObject);
+    procedure OpenSave(Sender: TObject);
+    procedure ConfimCountPlayers(Sender: TObject);
+    procedure AddCountPlayer(Sender: TObject);
+    procedure OddCountPlayer(Sender: TObject);
     procedure OnLoad(Sender: TObject);
-    procedure Button6Click(Sender: TObject);
-    procedure Button7Click(Sender: TObject);
+    procedure PastFriend(Sender: TObject);
+    procedure NextFriend(Sender: TObject);
     procedure OnResize(Sender: TObject);
     procedure OnCanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
       var Resize: Boolean);
@@ -138,16 +138,12 @@ type
     procedure SaveGame(players: TPlayers; bank: string; currentPlayer: Integer;
       SaveName: string);
     function IsAllSkip(players: TPlayers): Boolean;
-    // ui
     procedure CreateFiftyButtons(lettersPlayer: string);
     procedure CreateFirendButtons(lettersPlayer: string; lettersFriend: string;
       onlyFirst: Boolean);
     procedure CreateButtons(letters: string);
     procedure DeleteButtons(var Buttons: TLetterButtons); overload;
     procedure DeleteButtons(var Buttons: TButtons); overload;
-    { Private declarations }
-  public
-    { Public declarations }
   end;
 
 var
@@ -164,7 +160,6 @@ begin
   FIsInWord := false;
 end;
 
-// не отвечает за интерфейс
 function TForm2.IsAllSkip(players: TPlayers): Boolean;
 var
   temp: Integer;
@@ -419,8 +414,7 @@ begin
   CloseFile(SaveFile);
 end;
 
-// интерфейс
-procedure TForm2.Button10Click(Sender: TObject);
+procedure TForm2.ConfimSave(Sender: TObject);
 var
   i: Integer;
 begin
@@ -434,7 +428,7 @@ begin
   StartGame;
 end;
 
-procedure TForm2.Button11Click(Sender: TObject);
+procedure TForm2.BackFromSave(Sender: TObject);
 begin
   PlaySound(DEFAULT_PATH_BTN_SOUND, 0, SND_FILENAME OR SND_NOSTOP OR SND_ASYNC);
   Panel6.Visible := false;
@@ -442,7 +436,7 @@ begin
   DeleteButtons(SaveButtons);
 end;
 
-procedure TForm2.Button12Click(Sender: TObject);
+procedure TForm2.AddCountPlayer(Sender: TObject);
 begin
   PlaySound(DEFAULT_PATH_BTN_SOUND, 0, SND_FILENAME OR SND_NOSTOP OR SND_ASYNC);
   Inc(countPlayer);
@@ -453,7 +447,7 @@ begin
   Label5.Caption := IntToStr(countPlayer);
 end;
 
-procedure TForm2.Button13Click(Sender: TObject);
+procedure TForm2.OddCountPlayer(Sender: TObject);
 begin
   PlaySound(DEFAULT_PATH_BTN_SOUND, 0, SND_FILENAME OR SND_NOSTOP OR SND_ASYNC);
   Dec(countPlayer);
@@ -464,7 +458,7 @@ begin
   Label5.Caption := IntToStr(countPlayer);
 end;
 
-procedure TForm2.Button14Click(Sender: TObject);
+procedure TForm2.ConfimCountPlayers(Sender: TObject);
 begin
   PlaySound(DEFAULT_PATH_BTN_SOUND, 0, SND_FILENAME OR SND_NOSTOP OR SND_ASYNC);
   Panel2.Visible := True;
@@ -473,7 +467,7 @@ begin
   StartGame;
 end;
 
-procedure TForm2.Button16Click(Sender: TObject);
+procedure TForm2.NextPlayer(Sender: TObject);
 var
   strWord: string;
   index, maxpoints: Integer;
@@ -590,7 +584,7 @@ begin
   end;
 end;
 
-procedure TForm2.Button1Click(Sender: TObject);
+procedure TForm2.CreateNewGame(Sender: TObject);
 begin
   PlaySound(DEFAULT_PATH_BTN_SOUND, 0, SND_FILENAME OR SND_NOSTOP OR SND_ASYNC);
   Panel7.Visible := True;
@@ -598,7 +592,7 @@ begin
   countPlayer := 2;
 end;
 
-procedure TForm2.Button2Click(Sender: TObject);
+procedure TForm2.OpenSave(Sender: TObject);
 var
   Button: TButton;
   i, px: Integer;
@@ -631,13 +625,13 @@ begin
   FindClose(sr);
 end;
 
-procedure TForm2.Button3Click(Sender: TObject);
+procedure TForm2.Rule(Sender: TObject);
 begin
   PlaySound(DEFAULT_PATH_BTN_SOUND, 0, SND_FILENAME OR SND_NOSTOP OR SND_ASYNC);
   TForm1.ShowRules(DEFAULT_PATH_RULE);
 end;
 
-procedure TForm2.Button4Click(Sender: TObject);
+procedure TForm2.FiftyFifty(Sender: TObject);
 begin
   PlaySound(DEFAULT_PATH_BTN_SOUND, 0, SND_FILENAME OR SND_NOSTOP OR SND_ASYNC);
   Panel5.Visible := True;
@@ -649,7 +643,7 @@ begin
   CreateFiftyButtons(players[currentPlayer].letters);
 end;
 
-procedure TForm2.Button5Click(Sender: TObject);
+procedure TForm2.FriendHelp(Sender: TObject);
 var
   nextPl: Integer;
 begin
@@ -672,7 +666,7 @@ begin
   Label2.Caption := 'Игрок ' + IntToStr(nextPl + 1);
 end;
 
-procedure TForm2.Button6Click(Sender: TObject);
+procedure TForm2.PastFriend(Sender: TObject);
 begin
   PlaySound(DEFAULT_PATH_BTN_SOUND, 0, SND_FILENAME OR SND_NOSTOP OR SND_ASYNC);
   if friendPlayer = Low(players) then
@@ -700,7 +694,7 @@ begin
   Label2.Caption := 'Игрок ' + IntToStr(friendPlayer + 1);
 end;
 
-procedure TForm2.Button7Click(Sender: TObject);
+procedure TForm2.NextFriend(Sender: TObject);
 begin
   PlaySound(DEFAULT_PATH_BTN_SOUND, 0, SND_FILENAME OR SND_NOSTOP OR SND_ASYNC);
   if friendPlayer >= High(players) then
@@ -728,7 +722,7 @@ begin
   Label2.Caption := 'Игрок ' + IntToStr(friendPlayer + 1);
 end;
 
-procedure TForm2.Button8Click(Sender: TObject);
+procedure TForm2.ConfimFriendHelp(Sender: TObject);
 var
   temp: AnsiChar;
   i, j: Integer;
@@ -759,7 +753,7 @@ begin
   CreateButtons(players[currentPlayer].letters);
 end;
 
-procedure TForm2.Button9Click(Sender: TObject);
+procedure TForm2.ConfimFiftyFifty(Sender: TObject);
 var
   i: Integer;
 begin
@@ -947,52 +941,24 @@ var
 begin
 
   SetLength(LetterButtons, 10); // Создаем массив из 10 кнопок
-  for i := 1 to 5 do
+  for i := Low(LetterButtons) to High(LetterButtons) do
   begin
-    Button := TLetterButton.Create(Self, i);
+    Button := TLetterButton.Create(Self, i+1);
     Button.Parent := Panel3; // Устанавливаем форму как родителя кнопки
     Button.left := Panel3.Width div 2 - px div 2 - (px + Panel3.Width div 10) *
-      3 + (px + Panel3.Width div 10) * i;
+      2 + (px + Panel3.Width div 10) * (i mod 5);
     Button.StartVertexLeft := Button.left;
-    Button.Top := px * 2; // Располагаем кнопки друг под другом
+    Button.Top := px * (2 + 2 * (i div 5)); // Располагаем кнопки друг под другом
     Button.StartVertexTop := Button.Top;
     Button.Width := px;
     Button.Height := px;
     Button.Font.Height := px - 10;
-    Button.Caption := letters[i];
+    Button.Caption := letters[i+1];
     Button.Anchors := [];
     Button.IsInWord := false;
 
-    if letters[i] = players[prevPlayer].lastLetter then
-      Button.Color := clYellow;
-
     Button.OnClick := OnClickLetter;
-    LetterButtons[i - 1] := Button;
-  end;
-  for i := 6 to 10 do
-  begin
-    Button := TLetterButton.Create(Self, i);
-    Button.Parent := Panel3; // Устанавливаем форму как родителя кнопки
-    Button.left := Panel3.Width div 2 - px div 2 - (px + Panel3.Width div 10) *
-      3 + (px + Panel3.Width div 10) * (i - 5);
-    Button.StartVertexLeft := Button.left;
-    Button.Top := px * 4; // Располагаем кнопки друг под другом
-    Button.StartVertexTop := Button.Top;
-    Button.Width := px;
-    Button.Height := px;
-    Button.Font.Height := px - 10;
-    Button.Caption := letters[i];
-    Button.Anchors := [];
-    Button.IsInWord := false;
-
-    if letters[i] = players[prevPlayer].lastLetter then
-    begin
-      Button.Font.Color := clYellow;
-      Button.Repaint;
-    end;
-
-    Button.OnClick := OnClickLetter;
-    LetterButtons[i - 1] := Button;
+    LetterButtons[i] := Button;
   end;
 end;
 
@@ -1132,9 +1098,6 @@ begin
   Panel3.Visible := PV[3];
   Panel4.Visible := PV[4];
   Panel5.Visible := PV[5];
-  { iPercentage := (Sender as TForm).Width div FWidgh;
-    if iPercentage <> 1 then
-    (Sender as TForm).ScaleBy(iPercentage,1); }
 end;
 
 procedure TForm2.OnClickSave(Sender: TObject);
