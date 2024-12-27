@@ -88,7 +88,7 @@ type
     procedure OnClickFriend(Sender: TObject);
     procedure OnClickSave(Sender: TObject);
     procedure NextPlayer(Sender: TObject);
-    procedure FriendHelp(Sender: TObject);
+    procedure friendHelp(Sender: TObject);
     procedure FiftyFifty(Sender: TObject);
     procedure ConfimFriendHelp(Sender: TObject);
     procedure ConfimFiftyFifty(Sender: TObject);
@@ -643,7 +643,7 @@ begin
   CreateFiftyButtons(players[currentPlayer].letters);
 end;
 
-procedure TForm2.FriendHelp(Sender: TObject);
+procedure TForm2.friendHelp(Sender: TObject);
 var
   nextPl: Integer;
 begin
@@ -669,57 +669,65 @@ end;
 procedure TForm2.PastFriend(Sender: TObject);
 begin
   PlaySound(DEFAULT_PATH_BTN_SOUND, 0, SND_FILENAME OR SND_NOSTOP OR SND_ASYNC);
-  if friendPlayer = Low(players) then
+  if length(players) > 2 then
   begin
-    if High(players) <> currentPlayer then
-      friendPlayer := High(players)
+    if friendPlayer = Low(players) then
+    begin
+      if High(players) <> currentPlayer then
+        friendPlayer := High(players)
+      else
+        friendPlayer := High(players) - 1;
+    end
+    else if friendPlayer - 1 <> currentPlayer then
+      Dec(friendPlayer)
+    else if friendPlayer - 1 = Low(players) then
+    begin
+      if High(players) <> currentPlayer then
+        friendPlayer := High(players)
+      else
+        friendPlayer := High(players) - 1;
+    end
     else
-      friendPlayer := High(players) - 1;
-  end
-  else if friendPlayer - 1 <> currentPlayer then
-    Dec(friendPlayer)
-  else if friendPlayer - 1 = Low(players) then
-  begin
-    if High(players) <> currentPlayer then
-      friendPlayer := High(players)
-    else
-      friendPlayer := High(players) - 1;
-  end
-  else
-    Dec(friendPlayer, 2);
-  DeleteButtons(FriendButtons[1]);
-  Button8.Enabled := false;
-  CreateFirendButtons(players[currentPlayer].letters,
-    players[friendPlayer].letters, True);
-  Label2.Caption := 'Игрок ' + IntToStr(friendPlayer + 1);
+      Dec(friendPlayer, 2);
+    DeleteButtons(FriendButtons[1]);
+    Button8.Enabled := false;
+    CreateFirendButtons(players[currentPlayer].letters,
+      players[friendPlayer].letters, True);
+    Label2.Caption := 'Игрок ' + IntToStr(friendPlayer + 1);
+
+  end;
 end;
 
 procedure TForm2.NextFriend(Sender: TObject);
 begin
   PlaySound(DEFAULT_PATH_BTN_SOUND, 0, SND_FILENAME OR SND_NOSTOP OR SND_ASYNC);
-  if friendPlayer >= High(players) then
+  if length(players) > 2 then
   begin
-    if Low(players) <> currentPlayer then
-      friendPlayer := Low(players)
+    if friendPlayer >= High(players) then
+    begin
+      if Low(players) <> currentPlayer then
+        friendPlayer := Low(players)
+      else
+        friendPlayer := Low(players) + 1;
+    end
+    else if friendPlayer + 1 <> currentPlayer then
+      Inc(friendPlayer)
+    else if friendPlayer + 1 = High(players) then
+    begin
+      if Low(players) <> currentPlayer then
+        friendPlayer := Low(players)
+      else
+        friendPlayer := Low(players) + 1;
+    end
     else
-      friendPlayer := Low(players) + 1;
-  end
-  else if friendPlayer + 1 <> currentPlayer then
-    Inc(friendPlayer)
-  else if friendPlayer + 1 = High(players) then
-  begin
-    if Low(players) <> currentPlayer then
-      friendPlayer := Low(players)
-    else
-      friendPlayer := Low(players) + 1;
-  end
-  else
-    Inc(friendPlayer, 2);
-  DeleteButtons(FriendButtons[1]);
-  Button8.Enabled := false;
-  CreateFirendButtons(players[currentPlayer].letters,
-    players[friendPlayer].letters, True);
-  Label2.Caption := 'Игрок ' + IntToStr(friendPlayer + 1);
+      Inc(friendPlayer, 2);
+
+    DeleteButtons(FriendButtons[1]);
+    Button8.Enabled := false;
+    CreateFirendButtons(players[currentPlayer].letters,
+      players[friendPlayer].letters, True);
+    Label2.Caption := 'Игрок ' + IntToStr(friendPlayer + 1);
+  end;
 end;
 
 procedure TForm2.ConfimFriendHelp(Sender: TObject);
@@ -815,8 +823,7 @@ begin
   begin
     Button := TLetterButton.Create(Self, i);
     Button.Parent := Panel5; // Устанавливаем форму как родителя кнопки
-    Button.left := Panel5.Width div 2 + 5 -
-      (px + 10) * 6 + (px + 10) * i;
+    Button.left := Panel5.Width div 2 + 5 - (px + 10) * 6 + (px + 10) * i;
     Button.StartVertexLeft := 0;
     Button.Top := Panel5.Height div 2 - px;
     // Располагаем кнопки друг под другом
@@ -943,17 +950,18 @@ begin
   SetLength(LetterButtons, 10); // Создаем массив из 10 кнопок
   for i := Low(LetterButtons) to High(LetterButtons) do
   begin
-    Button := TLetterButton.Create(Self, i+1);
+    Button := TLetterButton.Create(Self, i + 1);
     Button.Parent := Panel3; // Устанавливаем форму как родителя кнопки
     Button.left := Panel3.Width div 2 - px div 2 - (px + Panel3.Width div 10) *
       2 + (px + Panel3.Width div 10) * (i mod 5);
     Button.StartVertexLeft := Button.left;
-    Button.Top := px * (2 + 2 * (i div 5)); // Располагаем кнопки друг под другом
+    Button.Top := px * (2 + 2 * (i div 5));
+    // Располагаем кнопки друг под другом
     Button.StartVertexTop := Button.Top;
     Button.Width := px;
     Button.Height := px;
     Button.Font.Height := px - 10;
-    Button.Caption := letters[i+1];
+    Button.Caption := letters[i + 1];
     Button.Anchors := [];
     Button.IsInWord := false;
 
@@ -1088,8 +1096,8 @@ begin
                 Round((px + 5 * LSize) * j);
       end
       else
-        LetterButtons[i].left := Panel5.Width div 2 + 5 -
-      (px + 10) * 5 + (px + 10) * i;
+        LetterButtons[i].left := Panel5.Width div 2 + 5 - (px + 10) * 5 +
+          (px + 10) * i;
     end;
 
     // FWidgh := Panel3.Width;
